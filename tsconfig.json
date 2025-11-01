@@ -13,7 +13,11 @@
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "removeComments": false
+    "removeComments": false,
+    "baseUrl": "./src",
+    "paths": {
+      "@domain/*": ["./domain/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["src/**/*"]
 }
