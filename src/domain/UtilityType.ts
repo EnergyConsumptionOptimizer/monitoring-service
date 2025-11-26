@@ -1,3 +1,5 @@
+import { InvalidUtilityTypeError } from "@domain/errors";
+
 export enum UtilityType {
   GAS = "gas",
   WATER = "water",
@@ -5,5 +7,12 @@ export enum UtilityType {
 }
 
 export function utilityTypeFromString(value: string): UtilityType {
-  return UtilityType[value.toUpperCase() as keyof typeof UtilityType];
+  const utilityType =
+    UtilityType[value.toUpperCase() as keyof typeof UtilityType];
+
+  if (!utilityType) {
+    throw new InvalidUtilityTypeError(value);
+  }
+
+  return utilityType;
 }
