@@ -1,9 +1,9 @@
 import { InvalidUtilityTypeError } from "@domain/errors";
 
 export enum UtilityType {
-  GAS = "gas",
-  WATER = "water",
-  ELECTRICITY = "electricity",
+  GAS = "GAS",
+  WATER = "WATER",
+  ELECTRICITY = "ELECTRICITY",
 }
 
 export function utilityTypeFromString(value: string): UtilityType {
