@@ -4,7 +4,7 @@ import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
 
 export const realTimeConsumptionSchema = z.number().nonnegative();
 
-export const timestampSchema = z.date();
+export const timestampSchema = z.string().transform((value) => new Date(value));
 
 export const householdUserUsernameSchema = z
   .string()
