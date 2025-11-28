@@ -22,7 +22,7 @@ export interface MonitoringService {
   /**
    * Retrieves utility meter information, optionally filtered by a time range and additional tags.
    *
-   * @param filter - Optional time ra filter.
+   * @param filter - Optional time range filter.
    * @param tagsFilter - Optional measurement tags filter.
    * @returns A promise resolving to the set of utility meters.
    */
