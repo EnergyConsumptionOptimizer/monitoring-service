@@ -29,7 +29,7 @@ export const errorHandler = (
   }
 
   if (error instanceof InvalidSmartFurnitureHookupIDError) {
-    return response.status(400).json(msgError(error.message));
+    return response.status(404).json(msgError(error.message));
   }
 
   if (
