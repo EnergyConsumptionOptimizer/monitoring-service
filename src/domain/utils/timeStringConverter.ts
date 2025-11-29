@@ -22,53 +22,53 @@ export function getStartOfPeriod(
   switch (timeUnit) {
     case "minute":
     case "minutes": {
-      result.setUTCMinutes(now.getUTCMinutes() - (timeAmount - 1));
-      result.setUTCSeconds(0);
-      result.setUTCMilliseconds(0);
+      result.setMinutes(now.getMinutes() - (timeAmount - 1));
+      result.setSeconds(0);
+      result.setMilliseconds(0);
       break;
     }
 
     case "hour":
     case "hours": {
-      result.setUTCHours(now.getUTCHours() - (timeAmount - 1));
-      result.setUTCMinutes(0);
-      result.setUTCSeconds(0);
-      result.setUTCMilliseconds(0);
+      result.setHours(now.getHours() - (timeAmount - 1));
+      result.setMinutes(0);
+      result.setSeconds(0);
+      result.setMilliseconds(0);
       break;
     }
 
     case "day":
     case "days": {
-      result.setUTCDate(now.getUTCDate() - (timeAmount - 1));
-      result.setUTCHours(0, 0, 0, 0);
+      result.setDate(now.getDate() - (timeAmount - 1));
+      result.setHours(0, 0, 0, 0);
       break;
     }
 
     case "week":
     case "weeks": {
-      const utcDay = now.getUTCDay();
-      const daysToMonday = utcDay === 0 ? 6 : utcDay - 1;
+      const day = now.getDay();
+      const daysToMonday = day === 0 ? 6 : day - 1;
       const totalDaysBack = daysToMonday + (timeAmount - 1) * 7;
 
-      result.setUTCDate(now.getUTCDate() - totalDaysBack);
-      result.setUTCHours(0, 0, 0, 0);
+      result.setDate(now.getDate() - totalDaysBack);
+      result.setHours(0, 0, 0, 0);
       break;
     }
 
     case "month":
     case "months": {
-      result.setUTCMonth(now.getUTCMonth() - (timeAmount - 1));
-      result.setUTCDate(1);
-      result.setUTCHours(0, 0, 0, 0);
+      result.setMonth(now.getMonth() - (timeAmount - 1));
+      result.setDate(1);
+      result.setHours(0, 0, 0, 0);
       break;
     }
 
     case "year":
     case "years": {
-      result.setUTCFullYear(now.getUTCFullYear() - (timeAmount - 1));
-      result.setUTCMonth(0);
-      result.setUTCDate(1);
-      result.setUTCHours(0, 0, 0, 0);
+      result.setFullYear(now.getFullYear() - (timeAmount - 1));
+      result.setMonth(0);
+      result.setDate(1);
+      result.setHours(0, 0, 0, 0);
       break;
     }
 

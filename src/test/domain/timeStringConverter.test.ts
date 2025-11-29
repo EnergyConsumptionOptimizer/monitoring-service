@@ -18,8 +18,8 @@ describe("TimeRangeConverter", () => {
       const resultDate = new Date(result);
       const currentTime = new Date();
 
-      expect(resultDate.getUTCMinutes()).toBe(currentTime.getUTCMinutes());
-      expect(resultDate.getUTCMilliseconds()).toBe(0);
+      expect(resultDate.getMinutes()).toBe(currentTime.getMinutes());
+      expect(resultDate.getMilliseconds()).toBe(0);
     });
 
     it("should parse minutes", () => {
@@ -31,10 +31,10 @@ describe("TimeRangeConverter", () => {
       const resultDate = new Date(result);
       const currentTime = new Date();
 
-      expect(resultDate.getUTCMinutes()).toBe(
-        currentTime.getUTCMinutes() - (amount - 1),
+      expect(resultDate.getMinutes()).toBe(
+        currentTime.getMinutes() - (amount - 1),
       );
-      expect(resultDate.getUTCMilliseconds()).toBe(0);
+      expect(resultDate.getMilliseconds()).toBe(0);
     });
 
     it("should parse current hour", () => {
@@ -44,8 +44,8 @@ describe("TimeRangeConverter", () => {
       const resultDate = new Date(result);
       const currentTime = new Date();
 
-      expect(resultDate.getUTCHours()).toBe(currentTime.getUTCHours());
-      expect(resultDate.getUTCMinutes()).toBe(0);
+      expect(resultDate.getHours()).toBe(currentTime.getHours());
+      expect(resultDate.getMinutes()).toBe(0);
     });
 
     it("should parse current hours", () => {
@@ -56,10 +56,8 @@ describe("TimeRangeConverter", () => {
       const resultDate = new Date(result);
       const currentTime = new Date();
 
-      expect(resultDate.getUTCHours()).toBe(
-        currentTime.getUTCHours() - (amount - 1),
-      );
-      expect(resultDate.getUTCMinutes()).toBe(0);
+      expect(resultDate.getHours()).toBe(currentTime.getHours() - (amount - 1));
+      expect(resultDate.getMinutes()).toBe(0);
     });
 
     it("should parse current day", () => {
@@ -69,9 +67,9 @@ describe("TimeRangeConverter", () => {
       const resultDate = new Date(result);
       const currentTime = new Date();
 
-      expect(resultDate.getUTCDay()).toBe(currentTime.getUTCDay());
-      expect(resultDate.getUTCHours()).toBe(0);
-      expect(resultDate.getUTCMinutes()).toBe(0);
+      expect(resultDate.getDay()).toBe(currentTime.getDay());
+      expect(resultDate.getHours()).toBe(0);
+      expect(resultDate.getMinutes()).toBe(0);
     });
 
     it("should parse days", () => {
@@ -82,11 +80,9 @@ describe("TimeRangeConverter", () => {
       const resultDate = new Date(result);
       const currentTime = new Date();
 
-      expect(resultDate.getUTCDay()).toBe(
-        currentTime.getUTCDay() - (amount - 1),
-      );
-      expect(resultDate.getUTCHours()).toBe(0);
-      expect(resultDate.getUTCMinutes()).toBe(0);
+      expect(resultDate.getDay()).toBe(currentTime.getDay() - (amount - 1));
+      expect(resultDate.getHours()).toBe(0);
+      expect(resultDate.getMinutes()).toBe(0);
     });
 
     it("should parse current month", () => {
@@ -96,12 +92,10 @@ describe("TimeRangeConverter", () => {
       const resultDate = new Date(result);
       const currentTime = new Date();
 
-      console.log("wtf", resultDate.getDate());
-
-      expect(resultDate.getUTCMonth()).toBe(currentTime.getUTCMonth());
-      expect(resultDate.getUTCDate()).toBe(1);
-      expect(resultDate.getUTCHours()).toBe(0);
-      expect(resultDate.getUTCMinutes()).toBe(0);
+      expect(resultDate.getMonth()).toBe(currentTime.getMonth());
+      expect(resultDate.getDate()).toBe(1);
+      expect(resultDate.getHours()).toBe(0);
+      expect(resultDate.getMinutes()).toBe(0);
     });
 
     it("should parse year", () => {
@@ -111,11 +105,11 @@ describe("TimeRangeConverter", () => {
       const resultDate = new Date(result);
       const currentTime = new Date();
 
-      expect(resultDate.getUTCFullYear()).toBe(currentTime.getUTCFullYear());
-      expect(resultDate.getUTCMonth()).toBe(0);
-      expect(resultDate.getUTCDate()).toBe(1);
-      expect(resultDate.getUTCHours()).toBe(0);
-      expect(resultDate.getUTCMinutes()).toBe(0);
+      expect(resultDate.getFullYear()).toBe(currentTime.getFullYear());
+      expect(resultDate.getMonth()).toBe(0);
+      expect(resultDate.getDate()).toBe(1);
+      expect(resultDate.getHours()).toBe(0);
+      expect(resultDate.getMinutes()).toBe(0);
     });
   });
 });
