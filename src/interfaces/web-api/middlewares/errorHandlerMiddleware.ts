@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { InvalidSmartFurnitureHookupIDError } from "@domain/errors";
+import {
+  InvalidSmartFurnitureHookupIDError,
+  InvalidUtilityTypeError,
+} from "@domain/errors";
 import axios from "axios";
 import { ZodError } from "zod";
 
@@ -28,7 +31,10 @@ export const errorHandler = (
     });
   }
 
-  if (error instanceof InvalidSmartFurnitureHookupIDError) {
+  if (
+    error instanceof InvalidSmartFurnitureHookupIDError ||
+    error instanceof InvalidUtilityTypeError
+  ) {
     return response.status(404).json(msgError(error.message));
   }
 
