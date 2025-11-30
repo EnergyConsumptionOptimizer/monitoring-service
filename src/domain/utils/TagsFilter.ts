@@ -1,6 +1,5 @@
-import { MonitoringRepository } from "@domain/ports/MonitoringRepository";
 import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
 
-export interface TagsFilter extends MonitoringRepository {
+export interface TagsFilter {
   username?: HouseholdUserUsername;
 }
