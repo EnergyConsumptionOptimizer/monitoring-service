@@ -24,10 +24,10 @@ export const monitoringRepositoryImpl = new MonitoringRepositoryImpl(
 // ===== Services =====
 export const smartFurnitureHookupServiceImpl =
   new SmartFurnitureHookupServiceImpl(
-    process.env.SMART_FURNITURE_HOOKUP_SERVICE_URI,
+    process.env.SMART_FURNITURE_HOOKUP_SERVICE_URI || "",
   );
 export const householdUserServiceImpl = new HouseholdUserServiceImpl(
-  process.env.USER_SERVICE_URI,
+  process.env.USER_SERVICE_URI || "",
 );
 export const ingestingServiceImpl = new IngestingServiceImpl(
   monitoringRepositoryImpl,
