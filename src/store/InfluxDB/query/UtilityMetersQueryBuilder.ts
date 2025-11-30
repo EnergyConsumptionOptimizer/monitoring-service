@@ -67,7 +67,7 @@ export class UtilityMetersQueryBuilder {
     const map = this.shouldApplyMap ? mapToLocalTime : undefined;
 
     return [
-      map ? `import "date"` : "",
+      map ? 'import "date"' : "",
       this.from,
       `|> range(start: ${this.start}${this.stop ? `, stop: ${this.stop}` : ""})`,
       `|> filter(fn: (r) => r._field == "value"${this.filters ?? ""})`,

@@ -35,7 +35,7 @@ export class ConsumptionSeriesQueryBuilder {
     const map = this.shouldApplyMap ? mapToLocalTime : undefined;
     const matToUtc = this.shouldApplyMap ? mapToUTC : undefined;
     return [
-      map ? `import "date"` : "",
+      map ? 'import "date"' : "",
       this.from,
       `|> range(start: ${this.start}${this.stop ? `, stop: ${this.stop}` : ""})`,
       `|> filter(fn: (r) => r._measurement == "${this.utilityType}" and r._field == "value" ${this.filters ?? ""})`,
