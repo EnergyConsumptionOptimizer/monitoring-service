@@ -7,13 +7,14 @@ import { IngestingServiceImpl } from "@application/IngestingServiceImpl";
 import { HouseholdUserServiceImpl } from "@interfaces/HouseholdUserServiceImpl";
 import { SmartFurnitureHookupServiceImpl } from "@interfaces/SmartFurnitureHookupServiceImpl";
 import { router } from "@interfaces/web-api/routes/routes";
+import "dotenv/config";
 
 // ===== Repository =====
 export const influxDBClient = new InfluxDBClient(
-  process.env.INFLUX_URL,
-  process.env.INFLUX_TOKEN,
-  process.env.INFLUX_ORG,
-  process.env.INFLUX_BUCKET,
+  process.env.INFLUX_URL || "",
+  process.env.INFLUX_TOKEN || "",
+  process.env.INFLUX_ORG || "",
+  process.env.INFLUX_BUCKET || "",
 );
 
 export const monitoringRepositoryImpl = new MonitoringRepositoryImpl(
