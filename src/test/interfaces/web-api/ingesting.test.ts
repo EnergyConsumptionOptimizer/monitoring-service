@@ -1,20 +1,12 @@
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import request from "supertest";
-import express, { Express } from "express";
-import { IngestingService } from "@domain/ports/IngestingService";
-import { IngestingController } from "@interfaces/web-api/controllers/IngestingController";
-import { router } from "@interfaces/web-api/routes/routes";
-import { errorHandler } from "@interfaces/web-api/middlewares/errorHandlerMiddleware";
 import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
 import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
 import { InvalidSmartFurnitureHookupIDError } from "@domain/errors";
+import { app, mockIngestingService } from "./dependencies";
 
 describe("Ingesting REST API", () => {
   const url = "/api/internal/measurements";
-  let app: Express;
-  let mockIngestingService: IngestingService;
-  let ingestingController: IngestingController;
-
   const TEST_HOOKUP_ID = "aaa-000";
 
   const VALID_MEASUREMENT_BODY = {
@@ -22,20 +14,6 @@ describe("Ingesting REST API", () => {
     timestamp: new Date("2025-11-28T10:00:00Z"),
     householdUserUsername: "user123",
   };
-
-  beforeAll(() => {
-    mockIngestingService = {
-      createMeasurement: vi.fn().mockResolvedValue(undefined),
-    };
-
-    ingestingController = new IngestingController(mockIngestingService);
-
-    app = express();
-    app.use(express.json());
-    app.use(router(ingestingController));
-
-    app.use(errorHandler);
-  });
 
   beforeEach(() => {
     vi.clearAllMocks();
