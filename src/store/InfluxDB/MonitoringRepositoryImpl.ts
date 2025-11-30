@@ -12,8 +12,11 @@ import { TimeSeriesFilter } from "@domain/utils/TimeSeriesFilter";
 import { ConsumptionPoint } from "@domain/ConsumptionPoint";
 import { ConsumptionSeriesQueryBuilder } from "./query/ConsumptionSeriesQueryBuilder";
 import { ConsumptionPointModel } from "./models/ConsumptionPointModel";
+import { MonitoringRepository } from "@domain/ports/MonitoringRepository";
+import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
+import { SmartFurnitureHookupsIDModel } from "./models/SmartFurnitureHookupsIDModel";
 
-export class MonitoringRepositoryImpl {
+export class MonitoringRepositoryImpl implements MonitoringRepository {
   constructor(private readonly influxDB: InfluxDBClient) {}
 
   async saveMeasurement(measurement: Measurement): Promise<void> {
@@ -32,6 +35,26 @@ export class MonitoringRepositoryImpl {
       );
 
     await this.influxDB.writePoint(point);
+  }
+
+  async findActiveSmartFurnitureHookups(): Promise<SmartFurnitureHookupID[]> {
+    const query = `
+      from(bucket: "${this.influxDB.getBucket()}")
+        |> range(start: -25s)
+        |> filter(fn: (r) => r._field == "value")
+        |> keep(columns: ["${MeasurementTag.SMART_FURNITURE_HOOKUP_ID}"])
+        |> unique(column: "${MeasurementTag.SMART_FURNITURE_HOOKUP_ID}")
+    `;
+
+    const result: SmartFurnitureHookupsIDModel[] =
+      await this.influxDB.queryAsync(query);
+
+    return result.map(
+      (value) =>
+        new SmartFurnitureHookupID(
+          value[MeasurementTag.SMART_FURNITURE_HOOKUP_ID],
+        ),
+    );
   }
 
   async findUtilityMeters(
