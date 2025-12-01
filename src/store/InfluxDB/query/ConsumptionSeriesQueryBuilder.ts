@@ -1,6 +1,6 @@
 import { UtilityType } from "@domain/UtilityType";
 import { MeasurementTag } from "../MeasurementTag";
-import { TimeString } from "@domain/utils/TimeString";
+import { getTimeStringAmount, TimeString } from "@domain/utils/TimeString";
 import { getStartOfPeriod } from "@domain/utils/timeStringConverter";
 import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
 import { convertToUnitFormat } from "./TimeRangeInfluxConverter";
@@ -64,7 +64,8 @@ export class ConsumptionSeriesQueryBuilder {
     }
 
     this.start = getStartOfPeriod(from, this.DEFAULT_START);
-    this.windowCreateEmpty = ", createEmpty: true";
+    this.windowCreateEmpty =
+      this.start != this.DEFAULT_START ? ", createEmpty: true" : undefined;
 
     this.shouldApplyMap = shouldMapToLocalTime(from);
 
@@ -96,7 +97,7 @@ export class ConsumptionSeriesQueryBuilder {
   }
 
   withWindow(granularity?: TimeString): ConsumptionSeriesQueryBuilder {
-    if (!granularity) {
+    if (!granularity || getTimeStringAmount(granularity) < 1) {
       return this;
     }
 
