@@ -1,12 +1,27 @@
 import "dotenv/config";
 import express from "express";
-import { apiRouter, influxDBClient } from "@interfaces/web-api/dependencies";
+import { apiRouter, influxDBClient } from "@interfaces/dependencies";
 import { errorHandler } from "@interfaces/web-api/middlewares/errorHandlerMiddleware";
+import http from "http";
+import { Server } from "socket.io";
+import { SocketsNamespaceManager } from "@interfaces/web-sockets/SocketsNamespaceManager";
 
 const app = express();
 app.use(express.json());
 app.use(apiRouter);
 app.use(errorHandler);
+
+const server = http.createServer(app);
+
+const io: Server = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+const socketManager = new SocketsNamespaceManager(io);
+
+socketManager.registerNamespaces([]);
 
 const config = {
   port: process.env.PORT || 3000,
@@ -28,7 +43,7 @@ const connectDatabase = async () => {
 };
 
 const launchServer = () => {
-  app.listen(config.port, () => {
+  server.listen(config.port, () => {
     console.log(`Server running on port ${config.port}`);
   });
 };
