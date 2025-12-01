@@ -1,5 +1,5 @@
-import { MonitoringRepositoryImpl } from "../../store/InfluxDB/MonitoringRepositoryImpl";
-import { InfluxDBClient } from "../../store/InfluxDB/InfluxDBClient";
+import { MonitoringRepositoryImpl } from "../store/InfluxDB/MonitoringRepositoryImpl";
+import { InfluxDBClient } from "../store/InfluxDB/InfluxDBClient";
 import { MonitoringServiceImpl } from "@application/MonitoringServiceImpl";
 import { MonitoringController } from "@interfaces/web-api/controllers/MonitoringController";
 import { IngestingController } from "@interfaces/web-api/controllers/IngestingController";
@@ -38,6 +38,7 @@ export const ingestingServiceImpl = new IngestingServiceImpl(
 export const monitoringServiceImpl = new MonitoringServiceImpl(
   monitoringRepositoryImpl,
 );
+
 // ===== Controllers =====
 export const ingestingController = new IngestingController(
   ingestingServiceImpl,
@@ -45,5 +46,6 @@ export const ingestingController = new IngestingController(
 export const monitoringController = new MonitoringController(
   monitoringServiceImpl,
 );
+
 // ===== Router =====
 export const apiRouter = router(ingestingController, monitoringController);
