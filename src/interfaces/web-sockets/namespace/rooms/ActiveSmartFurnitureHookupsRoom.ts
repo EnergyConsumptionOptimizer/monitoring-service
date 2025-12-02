@@ -48,7 +48,7 @@ export class ActiveSmartFurnitureHookupsRoom implements NamespaceRoom {
             );
         } catch (error) {
           console.error(
-            "Failed to send data about active smart furniture hookup to",
+            "Failed to send data about active smart furniture hookup",
             error,
           );
           namespace.emit("error", this.FAIL_DATA_FETCH_MSG);
@@ -64,7 +64,6 @@ export class ActiveSmartFurnitureHookupsRoom implements NamespaceRoom {
     this.activeSmartFurnitureHookupsHandler
       .getCachedOrFreshData(this.BROADCAST_INTERVAL_MS)
       .then((data: SmartFurnitureHookupID[]) => {
-        console.log("emit fist data");
         socket.emit(
           "activeSmartFurnitureHookupsUpdate",
           ActiveSmartFurnitureHookupsMapper.toDTO(data),
