@@ -40,11 +40,11 @@ export class MonitoringRepositoryImpl implements MonitoringRepository {
   async findActiveSmartFurnitureHookups(): Promise<SmartFurnitureHookupID[]> {
     const query = `
       from(bucket: "${this.influxDB.getBucket()}")
-        |> range(start: -25s)
+        |> range(start: -60s)
         |> filter(fn: (r) => r._field == "value")
-        |> keep(columns: ["${MeasurementTag.SMART_FURNITURE_HOOKUP_ID}"])
-        |> unique(column: "${MeasurementTag.SMART_FURNITURE_HOOKUP_ID}")
-    `;
+        |> last()
+        |> filter(fn: (r) => r._value > 0)
+        |> keep(columns: ["${MeasurementTag.SMART_FURNITURE_HOOKUP_ID}"])`;
 
     const result: SmartFurnitureHookupsIDModel[] =
       await this.influxDB.queryAsync(query);
@@ -95,8 +95,6 @@ export class MonitoringRepositoryImpl implements MonitoringRepository {
       .withUser(tagsFilter?.username)
       .withWindow(filter?.granularity)
       .build();
-
-    console.log(query);
 
     const result: ConsumptionPointModel[] =
       await this.influxDB.queryAsync(query);
