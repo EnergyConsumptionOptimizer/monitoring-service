@@ -1,6 +1,10 @@
 import "dotenv/config";
 import express from "express";
-import { apiRouter, influxDBClient } from "@interfaces/dependencies";
+import {
+  apiRouter,
+  influxDBClient,
+  realTimeNamespace,
+} from "@interfaces/dependencies";
 import { errorHandler } from "@interfaces/web-api/middlewares/errorHandlerMiddleware";
 import http from "http";
 import { Server } from "socket.io";
@@ -21,7 +25,7 @@ const io: Server = new Server(server, {
 
 const socketManager = new SocketsNamespaceManager(io);
 
-socketManager.registerNamespaces([]);
+socketManager.registerNamespaces([realTimeNamespace]);
 
 const config = {
   port: process.env.PORT || 3000,
