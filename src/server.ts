@@ -5,6 +5,7 @@ import {
   influxDBClient,
   realTimeNamespace,
   utilityConsumptionsNamespace,
+  utilityMetersNamespace,
 } from "@interfaces/dependencies";
 import { errorHandler } from "@interfaces/web-api/middlewares/errorHandlerMiddleware";
 import http from "http";
@@ -29,6 +30,7 @@ const socketManager = new SocketsNamespaceManager(io);
 socketManager.registerNamespaces([
   realTimeNamespace,
   utilityConsumptionsNamespace,
+  utilityMetersNamespace,
 ]);
 
 const config = {

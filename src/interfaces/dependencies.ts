@@ -16,6 +16,8 @@ import { RealTimeUtilityMetersRoom } from "@interfaces/web-sockets/namespace/roo
 import { UtilityConsumptionsNamespace } from "@interfaces/web-sockets/namespace/UtilityConsumptionsNamespace";
 import { UtilityConsumptionsSubscription } from "@interfaces/web-sockets/namespace/subscriptions/UtilityConsumptionsSubscription";
 import { UtilityConsumptionsHandler } from "@interfaces/web-sockets/handlers/UtilityConsumptionsHandler";
+import { UtilityMetersNamespace } from "@interfaces/web-sockets/namespace/UtilityMetersNamespace";
+import { UtilityMetersSubscription } from "@interfaces/web-sockets/namespace/subscriptions/UtilityMetersSubscription";
 
 // ===== Repository =====
 export const influxDBClient = new InfluxDBClient(
@@ -61,7 +63,7 @@ export const apiRouter = router(ingestingController, monitoringController);
 // ===== Web-Sockets Handlers =====
 export const activeSmartFurnitureHookupsHandler =
   new ActiveSmartFurnitureHookupsHandler(monitoringServiceImpl);
-export const realTimeUtilityMetersHandler = new UtilityMetersHandler(
+export const utilityMetersHandler = new UtilityMetersHandler(
   monitoringServiceImpl,
 );
 export const utilityConsumptionHandler = new UtilityConsumptionsHandler(
@@ -72,7 +74,7 @@ export const utilityConsumptionHandler = new UtilityConsumptionsHandler(
 export const activeSmartFurnitureHookupsRoom =
   new ActiveSmartFurnitureHookupsRoom(activeSmartFurnitureHookupsHandler);
 export const realTimeUtilityMetersRoom = new RealTimeUtilityMetersRoom(
-  realTimeUtilityMetersHandler,
+  utilityMetersHandler,
 );
 
 // ===== Web-Sockets Namespace =====
@@ -83,6 +85,13 @@ export const realTimeNamespace = new RealTimeNamespace(
 
 export const utilityConsumptionSubscription =
   new UtilityConsumptionsSubscription(utilityConsumptionHandler);
+export const utilityMetersSubscription = new UtilityMetersSubscription(
+  utilityMetersHandler,
+);
+
 export const utilityConsumptionsNamespace = new UtilityConsumptionsNamespace(
   utilityConsumptionSubscription,
+);
+export const utilityMetersNamespace = new UtilityMetersNamespace(
+  utilityMetersSubscription,
 );
