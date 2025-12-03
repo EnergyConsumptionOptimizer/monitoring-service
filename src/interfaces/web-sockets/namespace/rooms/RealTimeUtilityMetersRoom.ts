@@ -1,5 +1,5 @@
 import { PeriodicBroadcaster } from "@interfaces/web-sockets/PeriodicBroadcaster";
-import { RealTimeUtilityMetersHandler } from "@interfaces/web-sockets/handlers/RealTimeUtilityMetersHandler";
+import { UtilityMetersHandler } from "@interfaces/web-sockets/handlers/UtilityMetersHandler";
 import { Namespace, Socket } from "socket.io";
 import { UtilityMetersDTO } from "@presentation/UtilityMetersDTO";
 import { NamespaceRoom } from "@interfaces/web-sockets/namespace/rooms/NamespaceRoom";
@@ -13,7 +13,7 @@ export class RealTimeUtilityMetersRoom implements NamespaceRoom {
   private readonly ROOM_NAME: string = "utility-meters-room";
   private readonly FAIL_DATA_FETCH_MSG = "Failed to fetch utility meters";
 
-  constructor(private utilityMetersHandler: RealTimeUtilityMetersHandler) {}
+  constructor(private utilityMetersHandler: UtilityMetersHandler) {}
 
   name(): string {
     return this.ROOM_NAME;

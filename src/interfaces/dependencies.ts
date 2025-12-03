@@ -11,7 +11,7 @@ import "dotenv/config";
 import { ActiveSmartFurnitureHookupsHandler } from "@interfaces/web-sockets/handlers/ActiveSmartFurnitureHookupsHandler";
 import { ActiveSmartFurnitureHookupsRoom } from "@interfaces/web-sockets/namespace/rooms/ActiveSmartFurnitureHookupsRoom";
 import { RealTimeNamespace } from "@interfaces/web-sockets/namespace/RealTimeNamespace";
-import { RealTimeUtilityMetersHandler } from "@interfaces/web-sockets/handlers/RealTimeUtilityMetersHandler";
+import { UtilityMetersHandler } from "@interfaces/web-sockets/handlers/UtilityMetersHandler";
 import { RealTimeUtilityMetersRoom } from "@interfaces/web-sockets/namespace/rooms/RealTimeUtilityMetersRoom";
 import { UtilityConsumptionsNamespace } from "@interfaces/web-sockets/namespace/UtilityConsumptionsNamespace";
 import { UtilityConsumptionSubscription } from "@interfaces/web-sockets/namespace/subscriptions/UtilityConsumptionSubscription";
@@ -61,7 +61,7 @@ export const apiRouter = router(ingestingController, monitoringController);
 // ===== Web-Sockets Handlers =====
 export const activeSmartFurnitureHookupsHandler =
   new ActiveSmartFurnitureHookupsHandler(monitoringServiceImpl);
-export const realTimeUtilityMetersHandler = new RealTimeUtilityMetersHandler(
+export const realTimeUtilityMetersHandler = new UtilityMetersHandler(
   monitoringServiceImpl,
 );
 export const utilityConsumptionHandler = new UtilityConsumptionsHandler(

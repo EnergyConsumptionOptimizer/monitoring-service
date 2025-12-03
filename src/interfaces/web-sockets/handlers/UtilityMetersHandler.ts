@@ -6,7 +6,7 @@ import { MonitoringService } from "@domain/ports/MonitoringService";
 import { TimeRangeFilter } from "@domain/utils/TimeRangeFilter";
 import { UtilityMeters } from "@domain/UtilityMeters";
 
-export class RealTimeUtilityMetersHandler {
+export class UtilityMetersHandler {
   private lastMeters?: UtilityMetersDTO;
   private lastFetch?: Date;
   private fetchInProgress?: Promise<UtilityMetersDTO>;
