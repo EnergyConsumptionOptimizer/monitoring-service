@@ -13,6 +13,9 @@ import { ActiveSmartFurnitureHookupsRoom } from "@interfaces/web-sockets/namespa
 import { RealTimeNamespace } from "@interfaces/web-sockets/namespace/RealTimeNamespace";
 import { RealTimeUtilityMetersHandler } from "@interfaces/web-sockets/handlers/RealTimeUtilityMetersHandler";
 import { RealTimeUtilityMetersRoom } from "@interfaces/web-sockets/namespace/rooms/RealTimeUtilityMetersRoom";
+import { UtilityConsumptionsNamespace } from "@interfaces/web-sockets/namespace/UtilityConsumptionsNamespace";
+import { UtilityConsumptionSubscription } from "@interfaces/web-sockets/namespace/subscriptions/UtilityConsumptionSubscription";
+import { UtilityConsumptionsHandler } from "@interfaces/web-sockets/handlers/UtilityConsumptionsHandler";
 
 // ===== Repository =====
 export const influxDBClient = new InfluxDBClient(
@@ -61,6 +64,9 @@ export const activeSmartFurnitureHookupsHandler =
 export const realTimeUtilityMetersHandler = new RealTimeUtilityMetersHandler(
   monitoringServiceImpl,
 );
+export const utilityConsumptionHandler = new UtilityConsumptionsHandler(
+  monitoringServiceImpl,
+);
 
 // ===== Web-Sockets Rooms =====
 export const activeSmartFurnitureHookupsRoom =
@@ -73,4 +79,10 @@ export const realTimeUtilityMetersRoom = new RealTimeUtilityMetersRoom(
 export const realTimeNamespace = new RealTimeNamespace(
   activeSmartFurnitureHookupsRoom,
   realTimeUtilityMetersRoom,
+);
+
+export const utilityConsumptionSubscription =
+  new UtilityConsumptionSubscription(utilityConsumptionHandler);
+export const utilityConsumptionsNamespace = new UtilityConsumptionsNamespace(
+  utilityConsumptionSubscription,
 );

@@ -4,6 +4,7 @@ import {
   apiRouter,
   influxDBClient,
   realTimeNamespace,
+  utilityConsumptionsNamespace,
 } from "@interfaces/dependencies";
 import { errorHandler } from "@interfaces/web-api/middlewares/errorHandlerMiddleware";
 import http from "http";
@@ -25,7 +26,10 @@ const io: Server = new Server(server, {
 
 const socketManager = new SocketsNamespaceManager(io);
 
-socketManager.registerNamespaces([realTimeNamespace]);
+socketManager.registerNamespaces([
+  realTimeNamespace,
+  utilityConsumptionsNamespace,
+]);
 
 const config = {
   port: process.env.PORT || 3000,
