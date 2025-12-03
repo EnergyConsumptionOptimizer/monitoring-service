@@ -5,6 +5,7 @@ import {
 import { MonitoringService } from "@domain/ports/MonitoringService";
 import { TimeRangeFilter } from "@domain/utils/TimeRangeFilter";
 import { UtilityMeters } from "@domain/UtilityMeters";
+import { TagsFilter } from "@domain/utils/TagsFilter";
 
 export class UtilityMetersHandler {
   private lastMeters?: UtilityMetersDTO;
@@ -13,8 +14,11 @@ export class UtilityMetersHandler {
 
   constructor(private readonly monitoringService: MonitoringService) {}
 
-  async getUtilityMeters(filter?: TimeRangeFilter): Promise<UtilityMetersDTO> {
-    return this.fetchUtilityMeters(filter);
+  async getUtilityMeters(
+    filter?: TimeRangeFilter,
+    tagsFilter?: TagsFilter,
+  ): Promise<UtilityMetersDTO> {
+    return this.fetchUtilityMeters(filter, tagsFilter);
   }
 
   async getCachedOrFreshData(frequency: number): Promise<UtilityMetersDTO> {
@@ -42,8 +46,12 @@ export class UtilityMetersHandler {
 
   private async fetchUtilityMeters(
     filter?: TimeRangeFilter,
+    tagsFilter?: TagsFilter,
   ): Promise<UtilityMetersDTO> {
-    const utilityMeters = await this.monitoringService.getUtilityMeters(filter);
+    const utilityMeters = await this.monitoringService.getUtilityMeters(
+      filter,
+      tagsFilter,
+    );
 
     return this.parseUtilityMeters(utilityMeters);
   }
