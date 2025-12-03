@@ -4,16 +4,16 @@ import {
   ConsumptionPointMapper,
 } from "@presentation/ConsumptionPointDTO";
 
-export interface UtilityConsumptionQueryResultDTO {
+export interface UtilityConsumptionsQueryResultDTO {
   label: string;
   utilityConsumptions: ConsumptionPointDTO[];
 }
 
-export const UtilityConsumptionQueryResultMapper = {
+export const UtilityConsumptionsQueryResultMapper = {
   toDTO(
     label: string,
     utilityConsumptions: ConsumptionPoint[],
-  ): UtilityConsumptionQueryResultDTO {
+  ): UtilityConsumptionsQueryResultDTO {
     return {
       label,
       utilityConsumptions: utilityConsumptions.map(

@@ -1,6 +1,6 @@
 import { utilityTypeFromString } from "@domain/UtilityType";
 import { UtilityConsumptionsQueryDTO } from "@presentation/web-socket/UtilityConsumptionsQueryDTO";
-import { UtilityConsumptionQueryResultMapper } from "@presentation/web-socket/UtilityConsumptionQueryResultDTO";
+import { UtilityConsumptionsQueryResultMapper } from "@presentation/web-socket/UtilityConsumptionsQueryResultDTO";
 import { UtilityConsumptionsSocket } from "@interfaces/web-sockets/sockets/UtilityConsumptionsSocket";
 import { UtilityConsumptionsHandler } from "@interfaces/web-sockets/handlers/UtilityConsumptionsHandler";
 import { ClientSocketLock } from "@interfaces/web-sockets/ClientSocketLock";
@@ -30,7 +30,7 @@ export class UtilityConsumptionsSubscription {
     this.clientsQueries.set(socket.id, queries);
 
     try {
-      await this.sendUtilityConsumptionUpdate(socket);
+      await this.sendUtilityConsumptionsUpdate(socket);
     } catch (error) {
       socket.emit("error", `Initial update failed: ${error}`);
       this.clientsQueries.delete(socket.id);
@@ -38,7 +38,7 @@ export class UtilityConsumptionsSubscription {
     }
 
     this.periodicSubscription.newSubscription(socket, async () => {
-      await this.sendUtilityConsumptionUpdate(socket);
+      await this.sendUtilityConsumptionsUpdate(socket);
     });
   }
 
@@ -79,7 +79,7 @@ export class UtilityConsumptionsSubscription {
     }
   }
 
-  private async sendUtilityConsumptionUpdate(
+  private async sendUtilityConsumptionsUpdate(
     socket: UtilityConsumptionsSocket,
   ): Promise<void> {
     const release = await this.lock.acquire(socket.id);
@@ -115,7 +115,7 @@ export class UtilityConsumptionsSubscription {
         query.tagFilter,
       );
 
-    return UtilityConsumptionQueryResultMapper.toDTO(
+    return UtilityConsumptionsQueryResultMapper.toDTO(
       query.label,
       utilityConsumptionsData,
     );
