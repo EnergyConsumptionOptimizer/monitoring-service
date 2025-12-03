@@ -1,12 +1,11 @@
-import { Namespace, Server, Socket } from "socket.io";
+import { Namespace, Server } from "socket.io";
 import { SocketNamespace } from "@interfaces/web-sockets/SocketNamespace";
 import { RealTimeClientEvents } from "@interfaces/web-sockets/events/clientEvents";
 import { RealTimeServerEvents } from "@interfaces/web-sockets/events/serverEvents";
 import { ActiveSmartFurnitureHookupsRoom } from "@interfaces/web-sockets/namespace/rooms/ActiveSmartFurnitureHookupsRoom";
 import { RealTimeUtilityMetersRoom } from "@interfaces/web-sockets/namespace/rooms/RealTimeUtilityMetersRoom";
 import { NamespaceRoom } from "@interfaces/web-sockets/namespace/rooms/NamespaceRoom";
-
-type RealTimeSocket = Socket<RealTimeClientEvents, RealTimeServerEvents>;
+import { RealTimeSocket } from "@interfaces/web-sockets/sockets/RealTimeSocket";
 
 export class RealTimeNamespace implements SocketNamespace {
   private readonly NAMESPACE_PATH = "/real-time";
