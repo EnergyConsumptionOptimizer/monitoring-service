@@ -1,6 +1,6 @@
 import { SocketNamespace } from "@interfaces/web-sockets/SocketNamespace";
 import { Namespace, Server } from "socket.io";
-import { UtilityConsumptionSubscription } from "@interfaces/web-sockets/namespace/subscriptions/UtilityConsumptionSubscription";
+import { UtilityConsumptionsSubscription } from "@interfaces/web-sockets/namespace/subscriptions/UtilityConsumptionsSubscription";
 import { UtilityConsumptionsQueryDTO } from "@presentation/web-socket/UtilityConsumptionsQueryDTO";
 import { UtilityConsumptionsSocket } from "@interfaces/web-sockets/sockets/UtilityConsumptionsSocket";
 
@@ -9,7 +9,7 @@ export class UtilityConsumptionsNamespace implements SocketNamespace {
   private namespace?: Namespace;
 
   constructor(
-    private utilityConsumptionSubscription: UtilityConsumptionSubscription,
+    private utilityConsumptionSubscription: UtilityConsumptionsSubscription,
   ) {}
 
   name(): string {

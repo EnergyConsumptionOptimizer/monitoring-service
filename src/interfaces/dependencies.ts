@@ -14,7 +14,7 @@ import { RealTimeNamespace } from "@interfaces/web-sockets/namespace/RealTimeNam
 import { UtilityMetersHandler } from "@interfaces/web-sockets/handlers/UtilityMetersHandler";
 import { RealTimeUtilityMetersRoom } from "@interfaces/web-sockets/namespace/rooms/RealTimeUtilityMetersRoom";
 import { UtilityConsumptionsNamespace } from "@interfaces/web-sockets/namespace/UtilityConsumptionsNamespace";
-import { UtilityConsumptionSubscription } from "@interfaces/web-sockets/namespace/subscriptions/UtilityConsumptionSubscription";
+import { UtilityConsumptionsSubscription } from "@interfaces/web-sockets/namespace/subscriptions/UtilityConsumptionsSubscription";
 import { UtilityConsumptionsHandler } from "@interfaces/web-sockets/handlers/UtilityConsumptionsHandler";
 
 // ===== Repository =====
@@ -82,7 +82,7 @@ export const realTimeNamespace = new RealTimeNamespace(
 );
 
 export const utilityConsumptionSubscription =
-  new UtilityConsumptionSubscription(utilityConsumptionHandler);
+  new UtilityConsumptionsSubscription(utilityConsumptionHandler);
 export const utilityConsumptionsNamespace = new UtilityConsumptionsNamespace(
   utilityConsumptionSubscription,
 );

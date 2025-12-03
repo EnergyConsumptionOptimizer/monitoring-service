@@ -6,7 +6,7 @@ import { UtilityConsumptionsHandler } from "@interfaces/web-sockets/handlers/Uti
 import { ClientSocketLock } from "@interfaces/web-sockets/ClientSocketLock";
 import { PeriodicSubscription } from "@interfaces/web-sockets/PeriodicSubscription";
 
-export class UtilityConsumptionSubscription {
+export class UtilityConsumptionsSubscription {
   private periodicSubscription: PeriodicSubscription =
     new PeriodicSubscription();
   private clientsQueries = new Map<string, UtilityConsumptionsQueryDTO[]>();
