@@ -5,7 +5,7 @@ import { UtilityMetersDTO } from "@presentation/UtilityMetersDTO";
 import { NamespaceRoom } from "@interfaces/web-sockets/namespace/rooms/NamespaceRoom";
 import { UtilityMetersServersEvents } from "@interfaces/web-sockets/events/serverEvents";
 import { UtilityMetersClientEvents } from "@interfaces/web-sockets/events/clientEvents";
-import { UtilityMetersSocket } from "@interfaces/web-sockets/sockets/UtilityMetersSocket";
+import { RealTimeUtilityMetersSocket } from "@interfaces/web-sockets/sockets/RealTimeUtilityMetersSocket";
 
 export class RealTimeUtilityMetersRoom implements NamespaceRoom {
   private realTimePeriodicBroadcaster?: PeriodicBroadcaster;
@@ -41,7 +41,7 @@ export class RealTimeUtilityMetersRoom implements NamespaceRoom {
     );
   }
 
-  subscribe(socket: UtilityMetersSocket) {
+  subscribe(socket: RealTimeUtilityMetersSocket) {
     this.realTimePeriodicBroadcaster?.newClient(socket);
 
     this.utilityMetersHandler
