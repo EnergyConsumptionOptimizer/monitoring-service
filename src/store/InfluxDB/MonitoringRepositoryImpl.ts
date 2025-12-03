@@ -101,7 +101,7 @@ export class MonitoringRepositoryImpl implements MonitoringRepository {
 
     return result.map((point) => ({
       value: point._value,
-      timestamp: point._time,
+      timestamp: new Date(point._time),
     }));
   }
 }
