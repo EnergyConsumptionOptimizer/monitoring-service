@@ -1,19 +1,25 @@
 import { ActiveSmartFurnitureHookupsDTO } from "@presentation/ActiveSmartFurnitureHookupsDTO";
 import { UtilityMetersDTO } from "@presentation/UtilityMetersDTO";
-import { UtilityConsumptionQueryResultDTO } from "@presentation/web-socket/UtilityConsumptionQueryResultDTO";
+import { UtilityConsumptionsQueryResultDTO } from "@presentation/web-socket/UtilityConsumptionsQueryResultDTO";
+import { UtilityMetersQueryResultDTO } from "@presentation/web-socket/UtilityMetersQueryResultDTO";
 
 export type RealTimeServerEvents = ErrorEvent &
   ActiveSmartFurnitureHookupsUpdate &
-  UtilityMetersUpdateEvent;
+  RealTimeUtilityMetersUpdateEvent;
 
 export type ActiveSmartFurnitureHookupsServersEvents = ErrorEvent &
   ActiveSmartFurnitureHookupsUpdate;
 
-export type UtilityMetersServersEvents = ErrorEvent & UtilityMetersUpdateEvent;
+export type RealTimeUtilityMetersServersEvents = ErrorEvent &
+  RealTimeUtilityMetersUpdateEvent;
 
 export type UtilityConsumptionsServersEvents = ErrorEvent &
   UtilityConsumptionsUpdateEvent &
   UtilityConsumptionsQueryUpdateEvent;
+
+export type UtilityMetersServersEvents = ErrorEvent &
+  UtilityMetersUpdateEvent &
+  UtilityMetersQueryUpdateEvent;
 
 export interface ErrorEvent {
   error: (error: string) => void;
@@ -25,16 +31,26 @@ export interface ActiveSmartFurnitureHookupsUpdate {
   ) => void;
 }
 
-export interface UtilityMetersUpdateEvent {
+export interface RealTimeUtilityMetersUpdateEvent {
   utilityMetersUpdate: (data: UtilityMetersDTO) => void;
 }
 
 export interface UtilityConsumptionsUpdateEvent {
-  utilityConsumptionsUpdate: (data: UtilityConsumptionQueryResultDTO[]) => void;
+  utilityConsumptionsUpdate: (
+    data: UtilityConsumptionsQueryResultDTO[],
+  ) => void;
 }
 
 export interface UtilityConsumptionsQueryUpdateEvent {
   utilityConsumptionsQueryUpdate: (
-    data: UtilityConsumptionQueryResultDTO,
+    data: UtilityConsumptionsQueryResultDTO,
   ) => void;
+}
+
+export interface UtilityMetersUpdateEvent {
+  utilityMetersUpdate: (data: UtilityMetersQueryResultDTO[]) => void;
+}
+
+export interface UtilityMetersQueryUpdateEvent {
+  utilityMetersQueryUpdate: (data: UtilityMetersQueryResultDTO) => void;
 }
