@@ -1,11 +1,11 @@
 import { Measurement } from "../Measurement";
-import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
 import { TimeRangeFilter } from "@domain/utils/TimeRangeFilter";
 import { TagsFilter } from "@domain/utils/TagsFilter";
 import { UtilityMeters } from "@domain/UtilityMeters";
 import { TimeSeriesFilter } from "@domain/utils/TimeSeriesFilter";
 import { ConsumptionPoint } from "@domain/ConsumptionPoint";
 import { UtilityType } from "@domain/UtilityType";
+import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
 
 /**
  * Repository interface responsible for persisting and retrieving monitoring data.
@@ -20,14 +20,16 @@ export interface MonitoringRepository {
   saveMeasurement(measurement: Measurement): Promise<void>;
 
   /**
-   * Finds all currently active smart furniture hookups.
+   * Finds all currently active smart furniture hookups along with their
+   *  * current consumption information.
    *
    * A smart furniture hookup is considered active if it has produced at least one
    * measurement within a recent time window.
    *
-   * @returns A promise resolving to a list of active SmartFurnitureHookupID values.
+   * @returns A promise resolving to a list of SmartFurnitureHookupID values
+   * together with the most recent consumption data.
    */
-  findActiveSmartFurnitureHookups(): Promise<SmartFurnitureHookupID[]>;
+  findActiveSmartFurnitureHookups(): Promise<ActiveSmartFurnitureHookup[]>;
 
   /**
    * Retrieves utility meter information, optionally filtered by time range

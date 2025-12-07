@@ -1,16 +1,20 @@
-import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
+import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
+import {
+  ActiveSmartFurnitureHookupDTO,
+  ActiveSmartFurnitureHookupMapper,
+} from "@presentation/ActiveSmartFurnitureHookupDTO";
 
 export interface ActiveSmartFurnitureHookupsDTO {
-  activeSmartFurnitureHookups: string[];
+  activeSmartFurnitureHookups: ActiveSmartFurnitureHookupDTO[];
 }
 
 export const ActiveSmartFurnitureHookupsMapper = {
   toDTO(
-    smartFurnitureHookupIDs: SmartFurnitureHookupID[],
+    activeSmartFurnitureHookups: ActiveSmartFurnitureHookup[],
   ): ActiveSmartFurnitureHookupsDTO {
     return {
-      activeSmartFurnitureHookups: smartFurnitureHookupIDs.map((id) =>
-        id.value(),
+      activeSmartFurnitureHookups: activeSmartFurnitureHookups.map(
+        ActiveSmartFurnitureHookupMapper.toDTO,
       ),
     };
   },

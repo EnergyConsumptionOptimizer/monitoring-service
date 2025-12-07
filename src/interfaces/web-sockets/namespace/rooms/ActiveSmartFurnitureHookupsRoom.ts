@@ -2,11 +2,14 @@ import { PeriodicBroadcaster } from "@interfaces/web-sockets/PeriodicBroadcaster
 import { ActiveSmartFurnitureHookupsHandler } from "@interfaces/web-sockets/handlers/ActiveSmartFurnitureHookupsHandler";
 import { Namespace } from "socket.io";
 import { NamespaceRoom } from "@interfaces/web-sockets/namespace/rooms/NamespaceRoom";
-import { ActiveSmartFurnitureHookupsMapper } from "@presentation/ActiveSmartFurnitureHookupsDTO";
-import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
 import { ActiveSmartFurnitureHookupsServersEvents } from "@interfaces/web-sockets/events/serverEvents";
 import { ActiveSmartFurnitureHookupsSocket } from "@interfaces/web-sockets/sockets/ActiveSmartFurnitureHookupsSocket";
 import { ActiveSmartFurnitureHookupsClientEvents } from "@interfaces/web-sockets/events/clientEvents";
+import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
+import {
+  ActiveSmartFurnitureHookupsDTO,
+  ActiveSmartFurnitureHookupsMapper,
+} from "@presentation/ActiveSmartFurnitureHookupsDTO";
 
 export class ActiveSmartFurnitureHookupsRoom implements NamespaceRoom {
   private realTimePeriodicBroadcaster?: PeriodicBroadcaster;
@@ -35,16 +38,14 @@ export class ActiveSmartFurnitureHookupsRoom implements NamespaceRoom {
       "active-smart-furniture-hookup",
       async () => {
         try {
-          const activeSmartFurnitureHookups =
+          const data =
             await this.activeSmartFurnitureHookupsHandler.getActiveSmartFurnitureHookups();
 
           namespace
             .to(this.ROOM_NAME)
             .emit(
               "activeSmartFurnitureHookupsUpdate",
-              ActiveSmartFurnitureHookupsMapper.toDTO(
-                activeSmartFurnitureHookups,
-              ),
+              this.parseActiveSmartFurnitureHookups(data),
             );
         } catch (error) {
           console.error(
@@ -63,10 +64,10 @@ export class ActiveSmartFurnitureHookupsRoom implements NamespaceRoom {
 
     this.activeSmartFurnitureHookupsHandler
       .getCachedOrFreshData(this.BROADCAST_INTERVAL_MS)
-      .then((data: SmartFurnitureHookupID[]) => {
+      .then((data: ActiveSmartFurnitureHookup[]) => {
         socket.emit(
           "activeSmartFurnitureHookupsUpdate",
-          ActiveSmartFurnitureHookupsMapper.toDTO(data),
+          this.parseActiveSmartFurnitureHookups(data),
         );
       })
       .catch((error) => {
@@ -76,6 +77,12 @@ export class ActiveSmartFurnitureHookupsRoom implements NamespaceRoom {
         );
         socket.emit("error", this.FAIL_DATA_FETCH_MSG);
       });
+  }
+
+  private parseActiveSmartFurnitureHookups(
+    activeSmartFurnitureHookups: ActiveSmartFurnitureHookup[],
+  ): ActiveSmartFurnitureHookupsDTO {
+    return ActiveSmartFurnitureHookupsMapper.toDTO(activeSmartFurnitureHookups);
   }
 
   unsubscribe(socket: ActiveSmartFurnitureHookupsSocket) {

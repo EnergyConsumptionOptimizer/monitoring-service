@@ -1,20 +1,22 @@
 import { MonitoringService } from "@domain/ports/MonitoringService";
-import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
+import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
 
 export class ActiveSmartFurnitureHookupsHandler {
-  private lastActiveSmartFurnitureHookups?: SmartFurnitureHookupID[];
+  private lastActiveSmartFurnitureHookups?: ActiveSmartFurnitureHookup[];
   private lastFetch?: Date;
-  private fetchInProgress?: Promise<SmartFurnitureHookupID[]>;
+  private fetchInProgress?: Promise<ActiveSmartFurnitureHookup[]>;
 
   constructor(private readonly monitoringService: MonitoringService) {}
 
-  async getActiveSmartFurnitureHookups(): Promise<SmartFurnitureHookupID[]> {
+  async getActiveSmartFurnitureHookups(): Promise<
+    ActiveSmartFurnitureHookup[]
+  > {
     return this.fetchActiveSmartFurnitureHookups();
   }
 
   async getCachedOrFreshData(
     frequency: number,
-  ): Promise<SmartFurnitureHookupID[]> {
+  ): Promise<ActiveSmartFurnitureHookup[]> {
     if (
       this.lastActiveSmartFurnitureHookups &&
       this.isCachedDataFresh(frequency)
@@ -43,7 +45,7 @@ export class ActiveSmartFurnitureHookupsHandler {
   }
 
   private async fetchActiveSmartFurnitureHookups(): Promise<
-    SmartFurnitureHookupID[]
+    ActiveSmartFurnitureHookup[]
   > {
     return this.monitoringService.getActiveSmartFurnitureHookups();
   }

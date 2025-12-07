@@ -1,10 +1,10 @@
-import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
 import { UtilityType } from "@domain/UtilityType";
 import { ConsumptionPoint } from "@domain/ConsumptionPoint";
 import { UtilityMeters } from "@domain/UtilityMeters";
 import { TimeRangeFilter } from "@domain/utils/TimeRangeFilter";
 import { TimeSeriesFilter } from "@domain/utils/TimeSeriesFilter";
 import { TagsFilter } from "@domain/utils/TagsFilter";
+import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
 
 /**
  * Service interface for retrieving information
@@ -15,9 +15,9 @@ export interface MonitoringService {
    * Returns all currently active smart furniture hookups,
    * i.e. all smart furniture hookups that have sent a measurement in the recent times.
    *
-   * @returns A promise resolving to an array of active SmartFurnitureHookupID values.
+   * @returns A promise resolving to a list of SmartFurnitureHookupID values together with the most recent consumption data.
    */
-  getActiveSmartFurnitureHookups(): Promise<SmartFurnitureHookupID[]>;
+  getActiveSmartFurnitureHookups(): Promise<ActiveSmartFurnitureHookup[]>;
 
   /**
    * Retrieves utility meter information, optionally filtered by a time range and additional tags.

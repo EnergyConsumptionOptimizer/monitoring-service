@@ -1,17 +1,19 @@
 import { MonitoringService } from "@domain/ports/MonitoringService";
 import { MonitoringRepository } from "@domain/ports/MonitoringRepository";
-import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
 import { UtilityMeters } from "@domain/UtilityMeters";
 import { TimeRangeFilter } from "@domain/utils/TimeRangeFilter";
 import { TagsFilter } from "@domain/utils/TagsFilter";
 import { UtilityType } from "@domain/UtilityType";
 import { TimeSeriesFilter } from "@domain/utils/TimeSeriesFilter";
 import { ConsumptionPoint } from "@domain/ConsumptionPoint";
+import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
 
 export class MonitoringServiceImpl implements MonitoringService {
   constructor(private readonly monitoringRepository: MonitoringRepository) {}
 
-  async getActiveSmartFurnitureHookups(): Promise<SmartFurnitureHookupID[]> {
+  async getActiveSmartFurnitureHookups(): Promise<
+    ActiveSmartFurnitureHookup[]
+  > {
     return this.monitoringRepository.findActiveSmartFurnitureHookups();
   }
 
