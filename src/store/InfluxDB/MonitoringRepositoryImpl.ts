@@ -14,7 +14,8 @@ import { ConsumptionSeriesQueryBuilder } from "./query/ConsumptionSeriesQueryBui
 import { ConsumptionPointModel } from "./models/ConsumptionPointModel";
 import { MonitoringRepository } from "@domain/ports/MonitoringRepository";
 import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
-import { SmartFurnitureHookupsIDModel } from "./models/SmartFurnitureHookupsIDModel";
+import { ActiveSmartFurnitureHookupsModel } from "./models/ActiveSmartFurnitureHookupsModel";
+import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
 
 export class MonitoringRepositoryImpl implements MonitoringRepository {
   constructor(private readonly influxDB: InfluxDBClient) {}
@@ -37,24 +38,34 @@ export class MonitoringRepositoryImpl implements MonitoringRepository {
     await this.influxDB.writePoint(point);
   }
 
-  async findActiveSmartFurnitureHookups(): Promise<SmartFurnitureHookupID[]> {
+  async findActiveSmartFurnitureHookups(): Promise<
+    ActiveSmartFurnitureHookup[]
+  > {
     const query = `
       from(bucket: "${this.influxDB.getBucket()}")
         |> range(start: -60s)
         |> filter(fn: (r) => r._field == "value")
+        |> filter(fn: (r) =>r._measurement == "${UtilityType.GAS}" or  r._measurement == "${UtilityType.ELECTRICITY}" or r._measurement == "${UtilityType.WATER}")
         |> last()
         |> filter(fn: (r) => r._value > 0)
-        |> keep(columns: ["${MeasurementTag.SMART_FURNITURE_HOOKUP_ID}"])`;
+        |> keep(columns: ["${MeasurementTag.SMART_FURNITURE_HOOKUP_ID}", "_value", "_measurement"])`;
 
-    const result: SmartFurnitureHookupsIDModel[] =
+    const result: ActiveSmartFurnitureHookupsModel[] =
       await this.influxDB.queryAsync(query);
 
-    return result.map(
-      (value) =>
-        new SmartFurnitureHookupID(
-          value[MeasurementTag.SMART_FURNITURE_HOOKUP_ID],
+    return result.map((activeSmartFurnitureHookups) => {
+      return {
+        id: new SmartFurnitureHookupID(
+          activeSmartFurnitureHookups[MeasurementTag.SMART_FURNITURE_HOOKUP_ID],
         ),
-    );
+        consumption: {
+          value: activeSmartFurnitureHookups._value,
+          utilityType: utilityTypeFromString(
+            activeSmartFurnitureHookups._measurement,
+          ),
+        },
+      };
+    });
   }
 
   async findUtilityMeters(
