@@ -1,8 +1,8 @@
 import { MonitoringRepository } from "@domain/ports/MonitoringRepository";
 import { Measurement } from "@domain/Measurement";
-import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
 import { UtilityMeters } from "@domain/UtilityMeters";
 import { ConsumptionPoint } from "@domain/ConsumptionPoint";
+import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
 
 export class InMemoryMonitoringRepository implements MonitoringRepository {
   private readonly measurements: Measurement[] = [];
@@ -11,7 +11,9 @@ export class InMemoryMonitoringRepository implements MonitoringRepository {
     this.measurements.push(measurement);
   }
 
-  async findActiveSmartFurnitureHookups(): Promise<SmartFurnitureHookupID[]> {
+  async findActiveSmartFurnitureHookups(): Promise<
+    ActiveSmartFurnitureHookup[]
+  > {
     throw new Error("Method not implemented.");
   }
 
