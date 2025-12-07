@@ -4,7 +4,7 @@ import { getTimeStringAmount, TimeString } from "@domain/utils/TimeString";
 import { getStartOfPeriod } from "@domain/utils/timeStringConverter";
 import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
 import { convertToUnitFormat } from "./TimeRangeInfluxConverter";
-import { mapToLocalTime, mapToUTC, shouldMapToLocalTime } from "./utils";
+import { importTimeZone, shouldImportTimeZone } from "./utils";
 
 export class ConsumptionSeriesQueryBuilder {
   private readonly DEFAULT_START = "0";
@@ -18,7 +18,7 @@ export class ConsumptionSeriesQueryBuilder {
   private stop?: string;
   private windowSize: string;
   private windowCreateEmpty?: string;
-  private shouldApplyMap?: boolean;
+  private shouldApplyTimeZone = false;
 
   private constructor(bucket: string) {
     this.from = `from(bucket: "${bucket}")`;
@@ -32,14 +32,11 @@ export class ConsumptionSeriesQueryBuilder {
   }
 
   build(): string {
-    const map = this.shouldApplyMap ? mapToLocalTime : undefined;
-    const matToUtc = this.shouldApplyMap ? mapToUTC : undefined;
     return [
-      map ? 'import "date"' : "",
+      this.shouldApplyTimeZone ? importTimeZone : "",
       this.from,
       `|> range(start: ${this.start}${this.stop ? `, stop: ${this.stop}` : ""})`,
       `|> filter(fn: (r) => r._measurement == "${this.utilityType}" and r._field == "value" ${this.filters ?? ""})`,
-      map ?? "",
       `|> window(every: ${this.windowSize} ${this.windowCreateEmpty ?? ""})`,
       `|> group(columns: ["${MeasurementTag.SMART_FURNITURE_HOOKUP_ID}", "_start", "_stop"])
 |> integral(unit: 1h)
@@ -48,7 +45,6 @@ export class ConsumptionSeriesQueryBuilder {
 |> duplicate(column: "_start", as: "_time", )
 |> window(every: inf)
 |> keep(columns: ["_time", "_value"])`,
-      matToUtc ?? "",
     ].join("\n");
   }
 
@@ -67,7 +63,7 @@ export class ConsumptionSeriesQueryBuilder {
     this.windowCreateEmpty =
       this.start != this.DEFAULT_START ? ", createEmpty: true" : undefined;
 
-    this.shouldApplyMap = shouldMapToLocalTime(from);
+    this.shouldApplyTimeZone = shouldImportTimeZone(from);
 
     return this;
   }
@@ -79,7 +75,7 @@ export class ConsumptionSeriesQueryBuilder {
 
     this.stop = getStartOfPeriod(to, this.DEFAULT_STOP);
 
-    this.shouldApplyMap = shouldMapToLocalTime(to);
+    this.shouldApplyTimeZone = shouldImportTimeZone(to);
 
     return this;
   }

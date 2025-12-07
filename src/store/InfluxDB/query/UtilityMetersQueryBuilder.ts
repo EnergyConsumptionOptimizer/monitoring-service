@@ -2,7 +2,7 @@ import { TimeString } from "@domain/utils/TimeString";
 import { getStartOfPeriod } from "@domain/utils/timeStringConverter";
 import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
 import { MeasurementTag } from "../MeasurementTag";
-import { mapToLocalTime, shouldMapToLocalTime } from "./utils";
+import { importTimeZone, shouldImportTimeZone } from "./utils";
 
 /**
  * UtilityMetersQueryBuilder
@@ -49,7 +49,7 @@ export class UtilityMetersQueryBuilder {
   private filters?: string;
   private tail: string;
   private stop?: string;
-  private shouldApplyMap?: boolean;
+  private shouldApplyTimeZone?: boolean;
 
   private constructor(bucket: string) {
     this.from = `from(bucket: "${bucket}")`;
@@ -64,14 +64,11 @@ export class UtilityMetersQueryBuilder {
   }
 
   build(): string {
-    const map = this.shouldApplyMap ? mapToLocalTime : undefined;
-
     return [
-      map ? 'import "date"' : "",
+      this.shouldApplyTimeZone ? importTimeZone : "",
       this.from,
       `|> range(start: ${this.start}${this.stop ? `, stop: ${this.stop}` : ""})`,
       `|> filter(fn: (r) => r._field == "value"${this.filters ?? ""})`,
-      map ?? "",
       this.tail,
     ].join("\n");
   }
@@ -83,7 +80,7 @@ export class UtilityMetersQueryBuilder {
 
     this.start = getStartOfPeriod(from, this.DEFAULT_START);
 
-    this.shouldApplyMap = shouldMapToLocalTime(from);
+    this.shouldApplyTimeZone = shouldImportTimeZone(from);
 
     this.cumulativeTail();
 
@@ -97,7 +94,7 @@ export class UtilityMetersQueryBuilder {
 
     this.stop = getStartOfPeriod(to, this.DEFAULT_STOP);
 
-    this.shouldApplyMap = shouldMapToLocalTime(to);
+    this.shouldApplyTimeZone = shouldImportTimeZone(to);
     this.cumulativeTail();
 
     return this;
