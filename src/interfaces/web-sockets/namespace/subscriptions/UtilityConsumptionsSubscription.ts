@@ -108,14 +108,16 @@ export class UtilityConsumptionsSubscription {
   private async getUtilityConsumptionsQueryResult(
     query: UtilityConsumptionsQueryDTO,
   ) {
+    const utilityType = utilityTypeFromString(query.utilityType);
     const utilityConsumptionsData =
       await this.utilityConsumptionHandler.getUtilityConsumptions(
-        utilityTypeFromString(query.utilityType),
+        utilityType,
         query.filter,
         query.tagFilter,
       );
 
     return UtilityConsumptionsQueryResultMapper.toDTO(
+      utilityType,
       query.label,
       utilityConsumptionsData,
     );
