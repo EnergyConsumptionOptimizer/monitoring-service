@@ -1,7 +1,7 @@
 import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
-import { Consumption } from "@domain/Consumption";
+import { UtilityConsumption } from "@domain/UtilityConsumption";
 
 export interface ActiveSmartFurnitureHookup {
   id: SmartFurnitureHookupID;
-  consumption: Consumption;
+  utilityConsumption: UtilityConsumption;
 }

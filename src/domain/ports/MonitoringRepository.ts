@@ -3,7 +3,7 @@ import { TimeRangeFilter } from "@domain/utils/TimeRangeFilter";
 import { TagsFilter } from "@domain/utils/TagsFilter";
 import { UtilityMeters } from "@domain/UtilityMeters";
 import { TimeSeriesFilter } from "@domain/utils/TimeSeriesFilter";
-import { ConsumptionPoint } from "@domain/ConsumptionPoint";
+import { UtilityConsumptionPoint } from "@domain/UtilityConsumptionPoint";
 import { UtilityType } from "@domain/UtilityType";
 import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
 
@@ -51,11 +51,11 @@ export interface MonitoringRepository {
    * @param utilityType - The specific utility type for which consumption is requested.
    * @param filter - Optional time-series filter.
    * @param tagsFilter - Optional measurement tags filter.
-   * @returns A promise resolving to an array of consumption points matching the filters.
+   * @returns A promise resolving to an array of utility consumption points matching the filters.
    */
   findUtilityConsumptions(
     utilityType: UtilityType,
     filter?: TimeSeriesFilter,
     tagsFilter?: TagsFilter,
-  ): Promise<ConsumptionPoint[]>;
+  ): Promise<UtilityConsumptionPoint[]>;
 }

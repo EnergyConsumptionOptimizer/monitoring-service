@@ -5,7 +5,7 @@ import { TimeRangeFilter } from "@domain/utils/TimeRangeFilter";
 import { TagsFilter } from "@domain/utils/TagsFilter";
 import { UtilityType } from "@domain/UtilityType";
 import { TimeSeriesFilter } from "@domain/utils/TimeSeriesFilter";
-import { ConsumptionPoint } from "@domain/ConsumptionPoint";
+import { UtilityConsumptionPoint } from "@domain/UtilityConsumptionPoint";
 import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
 
 export class MonitoringServiceImpl implements MonitoringService {
@@ -28,7 +28,7 @@ export class MonitoringServiceImpl implements MonitoringService {
     utilityType: UtilityType,
     filter?: TimeSeriesFilter,
     tagsFilter?: TagsFilter,
-  ): Promise<ConsumptionPoint[]> {
+  ): Promise<UtilityConsumptionPoint[]> {
     return this.monitoringRepository.findUtilityConsumptions(
       utilityType,
       filter,

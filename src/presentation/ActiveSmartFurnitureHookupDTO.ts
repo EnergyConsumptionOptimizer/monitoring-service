@@ -1,12 +1,12 @@
 import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
 import {
-  ConsumptionDTO,
-  ConsumptionMapper,
-} from "@presentation/ConsumptionDTO";
+  UtilityConsumptionDTO,
+  UtilityConsumptionMapper,
+} from "@presentation/UtilityConsumptionDTO";
 
 export interface ActiveSmartFurnitureHookupDTO {
   id: string;
-  consumption: ConsumptionDTO;
+  utilityConsumption: UtilityConsumptionDTO;
 }
 
 export const ActiveSmartFurnitureHookupMapper = {
@@ -15,8 +15,8 @@ export const ActiveSmartFurnitureHookupMapper = {
   ): ActiveSmartFurnitureHookupDTO {
     return {
       id: activeSmartFurnitureHookup.id.value(),
-      consumption: ConsumptionMapper.toDTO(
-        activeSmartFurnitureHookup.consumption,
+      utilityConsumption: UtilityConsumptionMapper.toDTO(
+        activeSmartFurnitureHookup.utilityConsumption,
       ),
     };
   },

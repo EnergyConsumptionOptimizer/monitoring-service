@@ -1,22 +1,22 @@
 import { UtilityMeters } from "@domain/UtilityMeters";
 import { UtilityType } from "@domain/UtilityType";
 import {
-  ConsumptionDTO,
-  ConsumptionMapper,
-} from "@presentation/ConsumptionDTO";
+  UtilityConsumptionDTO,
+  UtilityConsumptionMapper,
+} from "@presentation/UtilityConsumptionDTO";
 
 export interface UtilityMetersDTO {
   utilityMeters: {
-    electricity: ConsumptionDTO;
-    water: ConsumptionDTO;
-    gas: ConsumptionDTO;
+    electricity: UtilityConsumptionDTO;
+    water: UtilityConsumptionDTO;
+    gas: UtilityConsumptionDTO;
   };
 }
 
 export const UtilityMetersMapper = {
   toDTO(utilityMeters: UtilityMeters): UtilityMetersDTO {
     const toConsumptionDTO = (utility: UtilityType) =>
-      ConsumptionMapper.toDTO({
+      UtilityConsumptionMapper.toDTO({
         value: utilityMeters[utility] ?? 0,
         utilityType: utility,
       });

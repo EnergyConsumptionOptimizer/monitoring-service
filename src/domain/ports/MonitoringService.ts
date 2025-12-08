@@ -1,5 +1,5 @@
 import { UtilityType } from "@domain/UtilityType";
-import { ConsumptionPoint } from "@domain/ConsumptionPoint";
+import { UtilityConsumptionPoint } from "@domain/UtilityConsumptionPoint";
 import { UtilityMeters } from "@domain/UtilityMeters";
 import { TimeRangeFilter } from "@domain/utils/TimeRangeFilter";
 import { TimeSeriesFilter } from "@domain/utils/TimeSeriesFilter";
@@ -44,5 +44,5 @@ export interface MonitoringService {
     utilityType: UtilityType,
     filter?: TimeSeriesFilter,
     tagsFilter?: TagsFilter,
-  ): Promise<ConsumptionPoint[]>;
+  ): Promise<UtilityConsumptionPoint[]>;
 }

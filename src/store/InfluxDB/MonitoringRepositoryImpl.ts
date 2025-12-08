@@ -9,7 +9,7 @@ import { UtilityType, utilityTypeFromString } from "@domain/UtilityType";
 import { UtilityMetersModel } from "./models/UtilityMetersModel";
 import { UtilityMetersQueryBuilder } from "./query/UtilityMetersQueryBuilder";
 import { TimeSeriesFilter } from "@domain/utils/TimeSeriesFilter";
-import { ConsumptionPoint } from "@domain/ConsumptionPoint";
+import { UtilityConsumptionPoint } from "@domain/UtilityConsumptionPoint";
 import { ConsumptionSeriesQueryBuilder } from "./query/ConsumptionSeriesQueryBuilder";
 import { ConsumptionPointModel } from "./models/ConsumptionPointModel";
 import { MonitoringRepository } from "@domain/ports/MonitoringRepository";
@@ -58,7 +58,7 @@ export class MonitoringRepositoryImpl implements MonitoringRepository {
         id: new SmartFurnitureHookupID(
           activeSmartFurnitureHookups[MeasurementTag.SMART_FURNITURE_HOOKUP_ID],
         ),
-        consumption: {
+        utilityConsumption: {
           value: activeSmartFurnitureHookups._value,
           utilityType: utilityTypeFromString(
             activeSmartFurnitureHookups._measurement,
@@ -96,7 +96,7 @@ export class MonitoringRepositoryImpl implements MonitoringRepository {
     utilityType: UtilityType,
     filter?: TimeSeriesFilter,
     tagsFilter?: TagsFilter,
-  ): Promise<ConsumptionPoint[]> {
+  ): Promise<UtilityConsumptionPoint[]> {
     const query = ConsumptionSeriesQueryBuilder.forBucket(
       this.influxDB.getBucket(),
     )

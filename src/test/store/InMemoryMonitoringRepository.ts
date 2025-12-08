@@ -1,7 +1,7 @@
 import { MonitoringRepository } from "@domain/ports/MonitoringRepository";
 import { Measurement } from "@domain/Measurement";
 import { UtilityMeters } from "@domain/UtilityMeters";
-import { ConsumptionPoint } from "@domain/ConsumptionPoint";
+import { UtilityConsumptionPoint } from "@domain/UtilityConsumptionPoint";
 import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
 
 export class InMemoryMonitoringRepository implements MonitoringRepository {
@@ -17,7 +17,7 @@ export class InMemoryMonitoringRepository implements MonitoringRepository {
     throw new Error("Method not implemented.");
   }
 
-  async findUtilityConsumptions(): Promise<ConsumptionPoint[]> {
+  async findUtilityConsumptions(): Promise<UtilityConsumptionPoint[]> {
     throw new Error("Method not implemented.");
   }
 
