@@ -1,23 +1,26 @@
-import { ConsumptionPoint } from "@domain/ConsumptionPoint";
+import { UtilityConsumptionPoint } from "@domain/UtilityConsumptionPoint";
 import {
-  ConsumptionPointDTO,
-  ConsumptionPointMapper,
-} from "@presentation/ConsumptionPointDTO";
+  UtilityConsumptionsDTO,
+  utilityConsumptionsMapper,
+} from "@presentation/UtilityConsumptionsDTO";
+import { UtilityType } from "@domain/UtilityType";
 
 export interface UtilityConsumptionsQueryResultDTO {
   label: string;
-  utilityConsumptions: ConsumptionPointDTO[];
+  utilityConsumptions: UtilityConsumptionsDTO;
 }
 
 export const UtilityConsumptionsQueryResultMapper = {
   toDTO(
+    utilityType: UtilityType,
     label: string,
-    utilityConsumptions: ConsumptionPoint[],
+    utilityConsumptions: UtilityConsumptionPoint[],
   ): UtilityConsumptionsQueryResultDTO {
     return {
       label,
-      utilityConsumptions: utilityConsumptions.map(
-        ConsumptionPointMapper.toDTO,
+      utilityConsumptions: utilityConsumptionsMapper.toDTO(
+        utilityType,
+        utilityConsumptions,
       ),
     };
   },
