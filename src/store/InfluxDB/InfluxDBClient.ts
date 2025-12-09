@@ -4,6 +4,9 @@ import {
   QueryApi,
   WriteApi,
 } from "@influxdata/influxdb-client";
+import { DeleteAPI } from "@influxdata/influxdb-client-apis";
+import { influxDBClient } from "@interfaces/dependencies";
+import { MeasurementTag } from "./MeasurementTag";
 
 export class InfluxDBClient {
   private readonly influxDB: InfluxDB;
@@ -26,6 +29,10 @@ export class InfluxDBClient {
     return this.influxDB.getQueryApi(this.org);
   }
 
+  getDeleteApi() {
+    return new DeleteAPI(influxDBClient.getInfluxDB());
+  }
+
   async writePoint(point: Point): Promise<void> {
     const writeApi = this.getWriteApi();
 
@@ -37,7 +44,25 @@ export class InfluxDBClient {
     const queryApi = this.getQueryApi();
 
     try {
-      return await queryApi.collectRows<T>(fluxQuery);
+      return queryApi.collectRows<T>(fluxQuery);
+    } catch (error) {
+      throw new Error(
+        `Query failed: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
+  }
+
+  async deleteAsync(tag: MeasurementTag, value: string): Promise<void> {
+    try {
+      return this.getDeleteApi().postDelete({
+        org: this.org,
+        bucket: this.bucket,
+        body: {
+          start: "1970-01-01T00:00:00Z",
+          stop: new Date().toISOString(),
+          predicate: `${tag}="${value}"`,
+        },
+      });
     } catch (error) {
       throw new Error(
         `Query failed: ${error instanceof Error ? error.message : String(error)}`,
