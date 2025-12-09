@@ -16,6 +16,7 @@ import { MonitoringRepository } from "@domain/ports/MonitoringRepository";
 import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
 import { ActiveSmartFurnitureHookupsModel } from "./models/ActiveSmartFurnitureHookupsModel";
 import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
+import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
 
 export class MonitoringRepositoryImpl implements MonitoringRepository {
   constructor(private readonly influxDB: InfluxDBClient) {}
@@ -36,6 +37,25 @@ export class MonitoringRepositoryImpl implements MonitoringRepository {
       );
 
     await this.influxDB.writePoint(point);
+  }
+
+  async deleteHouseholdUserTagFromMeasurements(
+    username: HouseholdUserUsername,
+  ): Promise<void> {
+    const query = `
+    from(bucket: "${this.influxDB.getBucket()}")
+      |> range(start: 0)
+      |> filter(fn: (r) => r.${MeasurementTag.HOUSEHOLD_USER_USERNAME} == "${username.value()}")
+      |> drop(columns: ["${MeasurementTag.HOUSEHOLD_USER_USERNAME}"])
+      |> to(bucket: "${this.influxDB.getBucket()}")
+      `;
+
+    await this.influxDB.queryAsync(query);
+
+    await this.influxDB.deleteAsync(
+      MeasurementTag.HOUSEHOLD_USER_USERNAME,
+      username.value(),
+    );
   }
 
   async findActiveSmartFurnitureHookups(): Promise<
