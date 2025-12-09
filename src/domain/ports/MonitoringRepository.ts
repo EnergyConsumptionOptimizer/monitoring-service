@@ -6,6 +6,7 @@ import { TimeSeriesFilter } from "@domain/utils/TimeSeriesFilter";
 import { UtilityConsumptionPoint } from "@domain/UtilityConsumptionPoint";
 import { UtilityType } from "@domain/UtilityType";
 import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
+import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
 
 /**
  * Repository interface responsible for persisting and retrieving monitoring data.
@@ -18,6 +19,15 @@ export interface MonitoringRepository {
    * @returns A promise that resolves once the measurement has been stored.
    */
   saveMeasurement(measurement: Measurement): Promise<void>;
+
+  /**
+   * Deletes a username tag from all measurements.
+   *
+   * @param username - The household user's username to remove from measurements.
+   */
+  deleteHouseholdUserTagFromMeasurements(
+    username: HouseholdUserUsername,
+  ): Promise<void>;
 
   /**
    * Finds all currently active smart furniture hookups along with their
