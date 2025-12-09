@@ -18,6 +18,8 @@ import { UtilityConsumptionsSubscription } from "@interfaces/web-sockets/namespa
 import { UtilityConsumptionsHandler } from "@interfaces/web-sockets/handlers/UtilityConsumptionsHandler";
 import { UtilityMetersNamespace } from "@interfaces/web-sockets/namespace/UtilityMetersNamespace";
 import { UtilityMetersSubscription } from "@interfaces/web-sockets/namespace/subscriptions/UtilityMetersSubscription";
+import { MeasurementMaintenanceServiceImpl } from "@application/MeasurementMaintenanceServiceImpl";
+import { MeasurementMaintenanceController } from "@interfaces/web-api/controllers/MeasurementMaintenanceController";
 
 // ===== Repository =====
 export const influxDBClient = new InfluxDBClient(
@@ -45,6 +47,9 @@ export const ingestingServiceImpl = new IngestingServiceImpl(
   householdUserServiceImpl,
 );
 
+export const measurementMaintenanceServiceImpl =
+  new MeasurementMaintenanceServiceImpl(monitoringRepositoryImpl);
+
 export const monitoringServiceImpl = new MonitoringServiceImpl(
   monitoringRepositoryImpl,
 );
@@ -57,8 +62,15 @@ export const monitoringController = new MonitoringController(
   monitoringServiceImpl,
 );
 
+export const measurementMaintenanceController =
+  new MeasurementMaintenanceController(measurementMaintenanceServiceImpl);
+
 // ===== Web-API Router =====
-export const apiRouter = router(ingestingController, monitoringController);
+export const apiRouter = router(
+  ingestingController,
+  measurementMaintenanceController,
+  monitoringController,
+);
 
 // ===== Web-Sockets Handlers =====
 export const activeSmartFurnitureHookupsHandler =
