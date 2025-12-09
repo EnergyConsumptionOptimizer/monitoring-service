@@ -21,7 +21,7 @@ export function router(
   );
 
   router.get(
-    "/api/internal/measurements/:utility-type",
+    "/api/internal/measurements/:utilityType",
     monitoringController.getUtilityConsumptions,
   );
 
