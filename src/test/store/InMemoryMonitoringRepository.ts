@@ -11,6 +11,10 @@ export class InMemoryMonitoringRepository implements MonitoringRepository {
     this.measurements.push(measurement);
   }
 
+  async deleteHouseholdUserTagFromMeasurements(): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+
   async findActiveSmartFurnitureHookups(): Promise<
     ActiveSmartFurnitureHookup[]
   > {
