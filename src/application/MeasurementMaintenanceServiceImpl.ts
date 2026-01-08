@@ -2,9 +2,7 @@ import { MeasurementMaintenanceService } from "@domain/ports/MeasurementMaintena
 import { MonitoringRepository } from "@domain/ports/MonitoringRepository";
 import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
 
-export class MeasurementMaintenanceServiceImpl
-  implements MeasurementMaintenanceService
-{
+export class MeasurementMaintenanceServiceImpl implements MeasurementMaintenanceService {
   constructor(private readonly monitoringRepository: MonitoringRepository) {}
 
   removeHouseholdUserTagFromMeasurements(

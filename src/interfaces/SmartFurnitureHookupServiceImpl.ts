@@ -4,9 +4,7 @@ import { SmartFurnitureHookup } from "@application/SmartFurnitureHookup";
 import axios from "axios";
 import { utilityTypeFromString } from "@domain/UtilityType";
 
-export class SmartFurnitureHookupServiceImpl
-  implements SmartFurnitureHookupService
-{
+export class SmartFurnitureHookupServiceImpl implements SmartFurnitureHookupService {
   constructor(private readonly baseUrl: string) {}
 
   async getSmartFurnitureHookup(
