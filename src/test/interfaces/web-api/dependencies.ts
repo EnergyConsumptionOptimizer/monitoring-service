@@ -8,6 +8,7 @@ import { MonitoringController } from "@interfaces/web-api/controllers/Monitoring
 import { MonitoringService } from "@domain/ports/MonitoringService";
 import { MeasurementMaintenanceService } from "@domain/ports/MeasurementMaintenanceService";
 import { MeasurementMaintenanceController } from "@interfaces/web-api/controllers/MeasurementMaintenanceController";
+import { ManageSmartFurnitureHookupConnectionController } from "@interfaces/web-api/controllers/ManageSmartFurnitureHookupConnectionController";
 
 export const mockIngestingService: IngestingService = {
   createMeasurement: vi.fn().mockResolvedValue(undefined),
@@ -36,6 +37,9 @@ export const monitoringController = new MonitoringController(
   mockMonitoringService,
 );
 
+export const manageSmartFurnitureHookupConnectionController =
+  new ManageSmartFurnitureHookupConnectionController();
+
 export const app = express();
 app.use(express.json());
 app.use(
@@ -43,6 +47,7 @@ app.use(
     ingestingController,
     measurementMaintenanceController,
     monitoringController,
+    manageSmartFurnitureHookupConnectionController,
   ),
 );
 
