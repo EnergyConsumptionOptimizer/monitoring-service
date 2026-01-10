@@ -20,6 +20,7 @@ import { UtilityMetersNamespace } from "@interfaces/web-sockets/namespace/Utilit
 import { UtilityMetersSubscription } from "@interfaces/web-sockets/namespace/subscriptions/UtilityMetersSubscription";
 import { MeasurementMaintenanceServiceImpl } from "@application/MeasurementMaintenanceServiceImpl";
 import { MeasurementMaintenanceController } from "@interfaces/web-api/controllers/MeasurementMaintenanceController";
+import { ManageSmartFurnitureHookupConnectionController } from "@interfaces/web-api/controllers/ManageSmartFurnitureHookupConnectionController";
 
 // ===== Repository =====
 export const influxDBClient = new InfluxDBClient(
@@ -65,11 +66,15 @@ export const monitoringController = new MonitoringController(
 export const measurementMaintenanceController =
   new MeasurementMaintenanceController(measurementMaintenanceServiceImpl);
 
+export const manageSmartFurnitureHookupConnectionController =
+  new ManageSmartFurnitureHookupConnectionController();
+
 // ===== Web-API Router =====
 export const apiRouter = router(
   ingestingController,
   measurementMaintenanceController,
   monitoringController,
+  manageSmartFurnitureHookupConnectionController,
 );
 
 // ===== Web-Sockets Handlers =====
