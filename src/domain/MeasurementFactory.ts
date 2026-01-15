@@ -2,6 +2,7 @@ import { SmartFurnitureHookupID } from "./SmartFurnitureHookupID";
 import { UtilityType } from "./UtilityType";
 import { HouseholdUserUsername } from "./HouseholdUserUsername";
 import { Measurement } from "./Measurement";
+import { ZoneID } from "@domain/ZoneID";
 
 export class MeasurementFactory {
   createMeasurement(
@@ -10,6 +11,7 @@ export class MeasurementFactory {
     consumptionValue: number,
     timestamp: Date,
     householdUserUsername?: HouseholdUserUsername,
+    zoneID?: ZoneID,
   ): Measurement {
     return {
       smartFurnitureHookupID: smartFurnitureHookupID,
@@ -18,6 +20,7 @@ export class MeasurementFactory {
       timestamp,
       tags: {
         householdUserUsername: householdUserUsername,
+        zoneID: zoneID,
       },
     };
   }
