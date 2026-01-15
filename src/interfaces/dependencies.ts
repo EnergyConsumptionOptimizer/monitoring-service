@@ -21,6 +21,7 @@ import { UtilityMetersSubscription } from "@interfaces/web-sockets/namespace/sub
 import { MeasurementMaintenanceServiceImpl } from "@application/MeasurementMaintenanceServiceImpl";
 import { MeasurementMaintenanceController } from "@interfaces/web-api/controllers/MeasurementMaintenanceController";
 import { ManageSmartFurnitureHookupConnectionController } from "@interfaces/web-api/controllers/ManageSmartFurnitureHookupConnectionController";
+import { MapServiceImpl } from "@interfaces/MapServiceImpl";
 
 // ===== Repository =====
 export const influxDBClient = new InfluxDBClient(
@@ -39,13 +40,20 @@ export const smartFurnitureHookupServiceImpl =
   new SmartFurnitureHookupServiceImpl(
     process.env.SMART_FURNITURE_HOOKUP_SERVICE_URI || "",
   );
+
 export const householdUserServiceImpl = new HouseholdUserServiceImpl(
   process.env.USER_SERVICE_URI || "",
 );
+
+export const mapServiceImpl = new MapServiceImpl(
+  process.env.MAP_SERVICE_URI || "",
+);
+
 export const ingestingServiceImpl = new IngestingServiceImpl(
   monitoringRepositoryImpl,
   smartFurnitureHookupServiceImpl,
   householdUserServiceImpl,
+  mapServiceImpl,
 );
 
 export const measurementMaintenanceServiceImpl =
