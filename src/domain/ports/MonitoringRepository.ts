@@ -7,6 +7,7 @@ import { UtilityConsumptionPoint } from "@domain/UtilityConsumptionPoint";
 import { UtilityType } from "@domain/UtilityType";
 import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
 import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
+import { ZoneID } from "@domain/ZoneID";
 
 /**
  * Repository interface responsible for persisting and retrieving monitoring data.
@@ -28,6 +29,13 @@ export interface MonitoringRepository {
   deleteHouseholdUserTagFromMeasurements(
     username: HouseholdUserUsername,
   ): Promise<void>;
+
+  /**
+   * Deletes a zone id tag from all measurements.
+   *
+   * @param zoneID - The zone's id to remove from measurements.
+   */
+  deleteZoneIDTagFromMeasurements(zoneID: ZoneID): Promise<void>;
 
   /**
    * Finds all currently active smart furniture hookups along with their
