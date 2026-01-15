@@ -36,6 +36,9 @@ export class MonitoringRepositoryImpl implements MonitoringRepository {
         measurement.tags.householdUserUsername.value(),
       );
 
+    if (measurement.tags.zoneID)
+      point.tag(MeasurementTag.ZONE_ID, measurement.tags.zoneID.value());
+
     await this.influxDB.writePoint(point);
   }
 

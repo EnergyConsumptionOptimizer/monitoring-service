@@ -6,12 +6,14 @@ import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
 import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
 import { InvalidSmartFurnitureHookupIDError } from "@domain/errors";
 import { MeasurementFactory } from "@domain/MeasurementFactory";
+import { MapService } from "@application/ports/MapService";
 
 export class IngestingServiceImpl implements IngestingService {
   constructor(
     private readonly monitoringRepository: MonitoringRepository,
     private readonly smartFurnitureHookupService: SmartFurnitureHookupService,
     private readonly householdUserService: HouseholdUserService,
+    private readonly mapService: MapService,
   ) {}
 
   async createMeasurement(
@@ -35,8 +37,10 @@ export class IngestingServiceImpl implements IngestingService {
         smartFurnitureHookup.utilityType,
         consumptionValue,
         isNaN(timestamp.getTime()) ? new Date() : timestamp,
-
         await this.getValidHouseHoldUsername(householdUserUsername),
+        (await this.mapService.isSmartFurnitureHookupInAZone(
+          smartFurnitureHookupID,
+        )) ?? undefined,
       ),
     );
   }
