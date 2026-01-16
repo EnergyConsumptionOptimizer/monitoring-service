@@ -8,12 +8,14 @@ import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
 import { UtilityType } from "@domain/UtilityType";
 import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
 import { InvalidSmartFurnitureHookupIDError } from "@domain/errors";
+import { MapService } from "@application/ports/MapService";
 
 describe("IngestingServiceImpl", () => {
   let ingestingService: IngestingServiceImpl;
   let repository: InMemoryMonitoringRepository;
   let mockSmartFurnitureHookupService: SmartFurnitureHookupService;
   let mockHouseholdUserService: HouseholdUserService;
+  let mockMapService: MapService;
 
   const MOCK_HOOKUP_ID = new SmartFurnitureHookupID("aaa-000");
   const MOCK_CONSUMPTION_VALUE = 100;
@@ -47,10 +49,15 @@ describe("IngestingServiceImpl", () => {
       isHouseholdUserUsernameValid: vi.fn(),
     };
 
+    mockMapService = {
+      isSmartFurnitureHookupInAZone: vi.fn(),
+    };
+
     ingestingService = new IngestingServiceImpl(
       repository,
       mockSmartFurnitureHookupService,
       mockHouseholdUserService,
+      mockMapService,
     );
   });
 

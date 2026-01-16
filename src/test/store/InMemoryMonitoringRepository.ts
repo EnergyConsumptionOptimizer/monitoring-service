@@ -32,4 +32,8 @@ export class InMemoryMonitoringRepository implements MonitoringRepository {
   getLastMeasurement(): Measurement | undefined {
     return this.measurements.at(-1);
   }
+
+  deleteZoneIDTagFromMeasurements(): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
 }
