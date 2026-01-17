@@ -6,8 +6,9 @@ import {
 import axios from "axios";
 
 export class ManageSmartFurnitureHookupConnectionController {
-  private readonly MONITORING_SERVICE_HOST = `${process.env.MONITORING_SERVICE_HOST || "monitoring"}`;
-  private readonly EXTERNAL_PORT = process.env.EXTERNAL_PORT || 3003;
+  private readonly EXTERNAL_API_HOST =
+    process.env.EXTERNAL_API_HOST || "localhost";
+  private readonly EXTERNAL_API_PORT = process.env.EXTERNAL_API_PORT || 80;
 
   registerSmartFurnitureHookup = async (
     request: Request,
@@ -19,7 +20,7 @@ export class ManageSmartFurnitureHookupConnectionController {
 
     try {
       await axios.patch(endpoint, {
-        endpoint_url: `http://${this.MONITORING_SERVICE_HOST}:${this.EXTERNAL_PORT}/api/internal/measurements?smart_furniture_hookup=${smartFurnitureHookupID}`,
+        endpoint_url: `http://${this.EXTERNAL_API_HOST}:${this.EXTERNAL_API_PORT}/api/internal/measurements?smart_furniture_hookup_id=${smartFurnitureHookupID}`,
       });
       response.status(200).send();
     } catch (error) {
