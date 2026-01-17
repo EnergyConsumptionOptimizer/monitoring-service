@@ -6,6 +6,7 @@ import { ActiveSmartFurnitureHookupsRoom } from "@interfaces/web-sockets/namespa
 import { RealTimeUtilityMetersRoom } from "@interfaces/web-sockets/namespace/rooms/RealTimeUtilityMetersRoom";
 import { NamespaceRoom } from "@interfaces/web-sockets/namespace/rooms/NamespaceRoom";
 import { RealTimeSocket } from "@interfaces/web-sockets/sockets/RealTimeSocket";
+import { SocketAuthMiddleware } from "@interfaces/web-sockets/middleware/SocketAuthMiddleware";
 
 export class RealTimeNamespace implements SocketNamespace {
   private readonly NAMESPACE_PATH = "/real-time";
@@ -15,6 +16,7 @@ export class RealTimeNamespace implements SocketNamespace {
   constructor(
     private activeSmartFurnitureHookupsRoom: ActiveSmartFurnitureHookupsRoom,
     private utilityMetersRoom: RealTimeUtilityMetersRoom,
+    private authMiddleware: SocketAuthMiddleware,
   ) {
     this.rooms.push(activeSmartFurnitureHookupsRoom);
     this.rooms.push(utilityMetersRoom);
@@ -26,6 +28,8 @@ export class RealTimeNamespace implements SocketNamespace {
 
   setup(io: Server): void {
     this.namespace = io.of(this.name());
+
+    this.namespace.use(this.authMiddleware.authenticate);
 
     for (const room of this.rooms) {
       room.setup(this.namespace);
