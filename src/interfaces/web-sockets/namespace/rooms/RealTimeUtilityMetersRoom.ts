@@ -32,8 +32,6 @@ export class RealTimeUtilityMetersRoom implements NamespaceRoom {
           const utilityMeters =
             await this.utilityMetersHandler.getUtilityMeters();
 
-          console.log(utilityMeters);
-
           namespace.to(this.name()).emit("utilityMetersUpdate", utilityMeters);
         } catch (error) {
           console.error("Failed to send data about utility meters", error);
@@ -59,6 +57,8 @@ export class RealTimeUtilityMetersRoom implements NamespaceRoom {
   }
 
   unsubscribe(socket: Socket) {
-    this.realTimePeriodicBroadcaster?.clientDisconnected(socket);
+    if (socket.rooms.has(this.ROOM_NAME)) {
+      this.realTimePeriodicBroadcaster?.clientDisconnected(socket);
+    }
   }
 }

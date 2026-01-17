@@ -86,6 +86,8 @@ export class ActiveSmartFurnitureHookupsRoom implements NamespaceRoom {
   }
 
   unsubscribe(socket: ActiveSmartFurnitureHookupsSocket) {
-    this.realTimePeriodicBroadcaster?.clientDisconnected(socket);
+    if (socket.rooms.has(this.ROOM_NAME)) {
+      this.realTimePeriodicBroadcaster?.clientDisconnected(socket);
+    }
   }
 }

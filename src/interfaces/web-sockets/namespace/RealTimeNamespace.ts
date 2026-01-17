@@ -34,12 +34,15 @@ export class RealTimeNamespace implements SocketNamespace {
     this.namespace.on("connect", (socket: RealTimeSocket) => {
       this.handleActiveSmartFurnitureHookupSubscription(socket);
       this.handleUtilityMetersSubscription(socket);
-      socket.on("disconnect", () => {
-        console.log(`[real-time] ${socket.id} disconnected`);
+      socket.on("disconnecting", () => {
+        console.log(`[real-time] ${socket.id} disconnecting`);
 
         this.rooms.forEach((room) => {
           room.unsubscribe(socket);
         });
+      });
+      socket.on("disconnect", () => {
+        console.log(`[real-time] ${socket.id} disconnected`);
       });
     });
   }
