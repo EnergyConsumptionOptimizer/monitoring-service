@@ -14,7 +14,7 @@ export class MapServiceImpl implements MapService {
     try {
       const response = await axios.get(url);
 
-      return response.data.zoneID;
+      return new ZoneID(response.data.zoneID);
     } catch {
       return null;
     }
