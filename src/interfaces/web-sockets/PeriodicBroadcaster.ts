@@ -20,6 +20,7 @@ export class PeriodicBroadcaster {
       this.startBroadcasting().catch((error) => {
         console.error(`[${this.label}] Failed to start to broadcast`, error);
         socket.emit("error", "Failed to connect");
+        this.connectedClients--;
       });
     }
   }
