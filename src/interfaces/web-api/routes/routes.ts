@@ -4,6 +4,7 @@ import { MonitoringController } from "@interfaces/web-api/controllers/Monitoring
 import { MeasurementMaintenanceController } from "@interfaces/web-api/controllers/MeasurementMaintenanceController";
 import { ManageSmartFurnitureHookupConnectionController } from "@interfaces/web-api/controllers/ManageSmartFurnitureHookupConnectionController";
 import { internalRoutes } from "@interfaces/web-api/routes/internal/internalRoutes";
+import { healthCheck } from "@interfaces/web-api/routes/healthCheck";
 
 export function router(
   ingestingController: IngestingController,
@@ -12,6 +13,8 @@ export function router(
   registerSmartFurnitureHookup: ManageSmartFurnitureHookupConnectionController,
 ): Router {
   const router = Router();
+
+  router.get("/health", healthCheck);
 
   router.use(
     "/api/internal",
