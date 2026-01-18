@@ -4,6 +4,7 @@ import { UtilityMetersHandler } from "@interfaces/web-sockets/handlers/UtilityMe
 import { UtilityMetersSocket } from "@interfaces/web-sockets/sockets/UtilityMetersSocket";
 import { UtilityMetersQueryDTO } from "@presentation/web-socket/UtilityMetersQueryDTO";
 import { UtilityMetersQueryResultMapper } from "@presentation/web-socket/UtilityMetersQueryResultDTO";
+import { UtilityConsumptionMapper } from "@presentation/TagsFilterDTO";
 
 export class UtilityMetersSubscription {
   private periodicSubscription: PeriodicSubscription =
@@ -108,7 +109,9 @@ export class UtilityMetersSubscription {
   private async getUtilityMetersQueryResult(query: UtilityMetersQueryDTO) {
     const utilityMetersData = await this.utilityMetersHandler.getUtilityMeters(
       query.filter,
-      query.tagFilter,
+      query.tagsFilter
+        ? UtilityConsumptionMapper.toDomain(query.tagsFilter)
+        : undefined,
     );
 
     return UtilityMetersQueryResultMapper.toDTO(query.label, utilityMetersData);

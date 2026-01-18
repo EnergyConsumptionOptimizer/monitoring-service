@@ -1,9 +1,12 @@
-import { TimeRangeFilter } from "@domain/utils/TimeRangeFilter";
-import { TagsFilter } from "@domain/utils/TagsFilter";
+import { TagsFilterDTO } from "@presentation/TagsFilterDTO";
+import { TimeString } from "@domain/utils/TimeString";
 
 export interface UtilityMetersQueryDTO {
   label: string;
   utilityType: string;
-  filter?: TimeRangeFilter;
-  tagFilter?: TagsFilter;
+  filter?: {
+    from?: TimeString;
+    to?: TimeString;
+  };
+  tagsFilter?: TagsFilterDTO;
 }

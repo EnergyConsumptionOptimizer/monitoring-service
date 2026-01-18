@@ -1,9 +1,11 @@
-import { TimeSeriesFilter } from "@domain/utils/TimeSeriesFilter";
-import { TagsFilter } from "@domain/utils/TagsFilter";
+import { TimeString } from "@domain/utils/TimeString";
+import { TagsFilterDTO } from "@presentation/TagsFilterDTO";
 
 export interface UtilityConsumptionsQueryDTO {
   label: string;
   utilityType: string;
-  filter?: TimeSeriesFilter;
-  tagFilter?: TagsFilter;
+  filter?: {
+    granularity: TimeString;
+  };
+  tagsFilter?: TagsFilterDTO;
 }

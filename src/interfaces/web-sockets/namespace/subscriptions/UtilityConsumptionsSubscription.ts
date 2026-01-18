@@ -5,6 +5,7 @@ import { UtilityConsumptionsSocket } from "@interfaces/web-sockets/sockets/Utili
 import { UtilityConsumptionsHandler } from "@interfaces/web-sockets/handlers/UtilityConsumptionsHandler";
 import { ClientSocketLock } from "@interfaces/web-sockets/ClientSocketLock";
 import { PeriodicSubscription } from "@interfaces/web-sockets/PeriodicSubscription";
+import { UtilityConsumptionMapper } from "@presentation/TagsFilterDTO";
 
 export class UtilityConsumptionsSubscription {
   private periodicSubscription: PeriodicSubscription =
@@ -113,7 +114,9 @@ export class UtilityConsumptionsSubscription {
       await this.utilityConsumptionHandler.getUtilityConsumptions(
         utilityType,
         query.filter,
-        query.tagFilter,
+        query.tagsFilter
+          ? UtilityConsumptionMapper.toDomain(query.tagsFilter)
+          : undefined,
       );
 
     return UtilityConsumptionsQueryResultMapper.toDTO(
