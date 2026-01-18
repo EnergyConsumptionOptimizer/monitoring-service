@@ -1,12 +1,12 @@
 import { MonitoringService } from "@domain/ports/MonitoringService";
 import { NextFunction, Request, Response } from "express";
-import { utilityTypeSchema } from "@presentation/web-api-requests/utilityTypeSchema";
 import {
   fromSchema,
   granularitySchema,
   toSchema,
-  userSchema,
 } from "@presentation/web-api-requests/timeSeriesSchema";
+import { utilityTypeSchema } from "@presentation/validation/utilityTypeSchema";
+import { usernameSchema } from "@presentation/validation/usernameSchema";
 
 export class MonitoringController {
   constructor(private readonly monitoringService: MonitoringService) {}
@@ -22,7 +22,7 @@ export class MonitoringController {
       const from = fromSchema.parse(request.query.from);
       const to = toSchema.parse(request.query.to);
       const granularity = granularitySchema.parse(request.query.granularity);
-      const username = userSchema.parse(request.query.username);
+      const username = usernameSchema.parse(request.query.username);
 
       const utilityConsumptions =
         await this.monitoringService.getUtilityConsumptions(
