@@ -12,7 +12,7 @@ describe("Ingesting REST API", () => {
   const VALID_MEASUREMENT_BODY = {
     realTimeConsumption: 100,
     timestamp: new Date("2025-11-28T10:00:00Z"),
-    householdUserUsername: "user123",
+    username: "user123",
   };
 
   beforeEach(() => {
@@ -47,7 +47,7 @@ describe("Ingesting REST API", () => {
         new SmartFurnitureHookupID(TEST_HOOKUP_ID),
         VALID_MEASUREMENT_BODY.realTimeConsumption,
         VALID_MEASUREMENT_BODY.timestamp,
-        new HouseholdUserUsername(VALID_MEASUREMENT_BODY.householdUserUsername),
+        new HouseholdUserUsername(VALID_MEASUREMENT_BODY.username),
       );
     });
 
