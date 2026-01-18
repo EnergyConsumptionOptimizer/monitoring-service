@@ -87,7 +87,7 @@ describe("Monitoring REST API", () => {
       );
     });
 
-    it("should return 404 when  utility type doesn't exists", async () => {
+    it("should return 404 when utility type doesn't exists", async () => {
       const response = await getByUtilityTypeRequest("power");
 
       expect(response.status).toBe(404);

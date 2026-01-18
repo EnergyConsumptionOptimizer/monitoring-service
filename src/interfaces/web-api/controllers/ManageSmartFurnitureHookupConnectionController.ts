@@ -10,6 +10,21 @@ export class ManageSmartFurnitureHookupConnectionController {
     process.env.EXTERNAL_API_HOST || "localhost";
   private readonly EXTERNAL_API_PORT = process.env.EXTERNAL_API_PORT || 80;
 
+  private convertToDockerHost(originalUrl: string): string {
+    try {
+      const url = new URL(originalUrl);
+      if (url.hostname === "localhost" || url.hostname === "127.0.0.1") {
+        url.hostname = "host.docker.internal";
+      }
+
+      return url.toString();
+    } catch (error) {
+      console.error(error);
+      console.error("Invalid URL received: ", originalUrl);
+      return originalUrl;
+    }
+  }
+
   registerSmartFurnitureHookup = async (
     request: Request,
     response: Response,
@@ -17,9 +32,9 @@ export class ManageSmartFurnitureHookupConnectionController {
   ) => {
     const { smartFurnitureHookupID, endpoint } =
       registerSmartFurnitureHookupSchema.parse(request.body);
-
+    const dockerizedEndpoint = this.convertToDockerHost(endpoint);
     try {
-      await axios.patch(endpoint, {
+      await axios.patch(dockerizedEndpoint, {
         endpoint_url: `http://${this.EXTERNAL_API_HOST}:${this.EXTERNAL_API_PORT}/api/internal/measurements?smart_furniture_hookup_id=${smartFurnitureHookupID}`,
       });
       response.status(200).send();
