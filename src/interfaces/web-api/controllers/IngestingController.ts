@@ -14,8 +14,9 @@ export class IngestingController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const { realTimeConsumption, timestamp, householdUserUsername } =
+      const { realTimeConsumption, timestamp, username } =
         createMeasurementSchema.parse(request.body);
+
       const smartFurnitureHookupID = smartFurnitureHookupIDSchema.parse(
         request.query.smart_furniture_hookup_id,
       );
@@ -24,7 +25,7 @@ export class IngestingController {
         smartFurnitureHookupID,
         realTimeConsumption,
         timestamp,
-        householdUserUsername,
+        username,
       );
 
       response.status(204).send();
