@@ -114,6 +114,7 @@ export class MonitoringRepositoryImpl implements MonitoringRepository {
       .withStart(filter?.from)
       .withStop(filter?.to)
       .withUser(tagsFilter?.username)
+      .withZone(tagsFilter?.zoneID)
       .build();
 
     const result: UtilityMetersModel[] = await this.influxDB.queryAsync(query);
@@ -142,6 +143,7 @@ export class MonitoringRepositoryImpl implements MonitoringRepository {
       .withStart(filter?.from)
       .withStop(filter?.to)
       .withUser(tagsFilter?.username)
+      .withZone(tagsFilter?.zoneID)
       .withWindow(filter?.granularity)
       .build();
 

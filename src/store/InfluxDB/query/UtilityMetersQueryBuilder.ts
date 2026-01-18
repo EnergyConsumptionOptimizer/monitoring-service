@@ -3,6 +3,7 @@ import { getStartOfPeriod } from "@domain/utils/timeStringConverter";
 import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
 import { MeasurementTag } from "../MeasurementTag";
 import { importTimeZone, shouldImportTimeZone } from "./utils";
+import { ZoneID } from "@domain/ZoneID";
 
 /**
  * UtilityMetersQueryBuilder
@@ -30,11 +31,6 @@ import { importTimeZone, shouldImportTimeZone } from "./utils";
  * from(bucket: "utility")
  * |> range(start: 2025-11-28T00:01:00Z)
  * |> filter(fn: (r) => r._field == "value" and r.householdUserUsername == "alice")
- * |> map(fn: (r) => {
- *   m = date.month(t: r._time)
- *   offset = if m >= 4 and m <= 9 then 2h else 1h
- *   return { r with _time: date.add(d:offset, to:r._time)}
- * }
  * |> integral(unit: 1h)
  * |> group(columns: ["_measurement"])
  * |> sum()
@@ -114,6 +110,18 @@ export class UtilityMetersQueryBuilder {
     if (!this.filters) this.filters = "";
 
     this.filters += ` and r.${MeasurementTag.HOUSEHOLD_USER_USERNAME} == "${username.value()}"`;
+
+    return this;
+  }
+
+  withZone(zoneID?: ZoneID): UtilityMetersQueryBuilder {
+    if (!zoneID) {
+      return this;
+    }
+
+    if (!this.filters) this.filters = "";
+
+    this.filters += ` and r.${MeasurementTag.ZONE_ID} == "${zoneID.value()}"`;
 
     return this;
   }

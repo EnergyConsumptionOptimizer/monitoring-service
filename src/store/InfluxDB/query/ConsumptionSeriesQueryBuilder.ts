@@ -5,6 +5,7 @@ import { getStartOfPeriod } from "@domain/utils/timeStringConverter";
 import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
 import { convertToUnitFormat } from "./TimeRangeInfluxConverter";
 import { importTimeZone, shouldImportTimeZone } from "./utils";
+import { ZoneID } from "@domain/ZoneID";
 
 export class ConsumptionSeriesQueryBuilder {
   private readonly DEFAULT_START = "0";
@@ -88,6 +89,18 @@ export class ConsumptionSeriesQueryBuilder {
     if (!this.filters) this.filters = "";
 
     this.filters += ` and r.${MeasurementTag.HOUSEHOLD_USER_USERNAME} == "${username.value()}"`;
+
+    return this;
+  }
+
+  withZone(zoneID?: ZoneID): ConsumptionSeriesQueryBuilder {
+    if (!zoneID) {
+      return this;
+    }
+
+    if (!this.filters) this.filters = "";
+
+    this.filters += ` and r.${MeasurementTag.ZONE_ID} == "${zoneID.value()}"`;
 
     return this;
   }
