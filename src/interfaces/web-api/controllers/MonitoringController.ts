@@ -22,7 +22,7 @@ export class MonitoringController {
       const from = fromSchema.parse(request.query.from);
       const to = toSchema.parse(request.query.to);
       const granularity = granularitySchema.parse(request.query.granularity);
-      const username = usernameSchema.parse(request.query.username);
+      const username = usernameSchema.optional().parse(request.query.username);
 
       const utilityConsumptions =
         await this.monitoringService.getUtilityConsumptions(

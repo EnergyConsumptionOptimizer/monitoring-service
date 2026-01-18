@@ -16,12 +16,11 @@ export class MeasurementMaintenanceController {
       const householdUserUsername = usernameSchema.parse(
         request.params.username,
       );
-      //
+
       await this.measurementMaintenanceService.removeHouseholdUserTagFromMeasurements(
         householdUserUsername,
       );
 
-      console.log("ciao", householdUserUsername);
       response.status(204).send();
     } catch (error) {
       next(error);
