@@ -26,7 +26,7 @@ import { SocketAuthMiddleware } from "@interfaces/web-sockets/middleware/SocketA
 
 // ===== Repository =====
 export const influxDBClient = new InfluxDBClient(
-  process.env.INFLUX_URL || "",
+  `http://${process.env.INFLUXDB_HOST}:${process.env.INFLUXDB_PORT}`,
   process.env.INFLUX_TOKEN || "",
   process.env.INFLUX_ORG || "",
   process.env.INFLUX_BUCKET || "",

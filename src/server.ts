@@ -37,10 +37,11 @@ socketManager.registerNamespaces([
 
 const config = {
   port: process.env.PORT || 3000,
-  influxURL: `http://${process.env.INFLUXDB_HOST}:${process.env.INFLUXDB_PORT}`,
+  influxHOST: process.env.INFLUXDB_HOST,
+  influxPORT: process.env.INFLUXDB_PORT,
 };
 
-if (!config.influxURL) {
+if (!config.influxHOST && !config.influxPORT) {
   console.error("INFLUX_URL is not defined in environment variables.");
   process.exit(1);
 }
