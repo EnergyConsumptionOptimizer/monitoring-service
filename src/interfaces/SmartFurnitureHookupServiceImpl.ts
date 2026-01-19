@@ -10,7 +10,7 @@ export class SmartFurnitureHookupServiceImpl implements SmartFurnitureHookupServ
   async getSmartFurnitureHookup(
     smartFurnitureHookupID: SmartFurnitureHookupID,
   ): Promise<SmartFurnitureHookup | null> {
-    const url = `${this.baseUrl}/internal/smart-furniture-hookups/${smartFurnitureHookupID.value()}`;
+    const url = `${this.baseUrl}/api/internal/smart-furniture-hookups/${smartFurnitureHookupID.value()}`;
 
     try {
       const response = await axios.get(url);

@@ -14,7 +14,7 @@ export class HouseholdUserServiceImpl implements HouseholdUserService {
 
     try {
       await axios.get(
-        `${this.baseUrl}/internal/users/${householdUserUsername.value()}`,
+        `${this.baseUrl}/api/internal/users/${householdUserUsername.value()}`,
       );
       return true;
     } catch {

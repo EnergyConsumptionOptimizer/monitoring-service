@@ -9,7 +9,7 @@ export class MapServiceImpl implements MapService {
   async isSmartFurnitureHookupInAZone(
     smartFurnitureHookupID: SmartFurnitureHookupID,
   ): Promise<ZoneID | null> {
-    const url = `${this.baseUrl}/internal/smart-furniture-hookups/${smartFurnitureHookupID.value()}`;
+    const url = `${this.baseUrl}/api/internal/smart-furniture-hookups/${smartFurnitureHookupID.value()}`;
 
     try {
       const response = await axios.get(url);
