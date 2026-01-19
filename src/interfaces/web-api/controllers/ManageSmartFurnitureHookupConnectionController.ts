@@ -35,7 +35,7 @@ export class ManageSmartFurnitureHookupConnectionController {
     const dockerizedEndpoint = this.convertToDockerHost(endpoint);
     try {
       await axios.patch(dockerizedEndpoint, {
-        endpoint_url: `http://${this.EXTERNAL_API_HOST}:${this.EXTERNAL_API_PORT}/api/internal/measurements?smart_furniture_hookup_id=${smartFurnitureHookupID}`,
+        endpoint_url: `http://${this.EXTERNAL_API_HOST}:${this.EXTERNAL_API_PORT}/api/internal/measurements?smart_furniture_hookup_id=${smartFurnitureHookupID.value()}`,
       });
       response.status(200).send();
     } catch (error) {
