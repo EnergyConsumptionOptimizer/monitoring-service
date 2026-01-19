@@ -82,6 +82,32 @@ export class UtilityMetersSubscription {
     }
   }
 
+  async deleteQuery(socket: UtilityMetersSocket, label: string) {
+    const queries = this.clientsQueries.get(socket.id);
+
+    if (!queries) {
+      socket.emit("error", "No active subscription found");
+      return;
+    }
+
+    const release = await this.lock.acquire(socket.id);
+
+    try {
+      const index = queries.findIndex((q) => q.label === label);
+
+      if (index === -1) {
+        socket.emit("error", `Query with label '${label}' not found`);
+        return;
+      }
+
+      queries.splice(index, 1);
+
+      this.clientsQueries.set(socket.id, queries);
+    } finally {
+      release();
+    }
+  }
+
   private async sendUtilityMetersUpdate(
     socket: UtilityMetersSocket,
   ): Promise<void> {

@@ -20,6 +20,7 @@ export class UtilityMetersNamespace implements SocketNamespace {
     this.namespace.on("connect", (socket: UtilityMetersSocket) => {
       this.handleConnection(socket);
       this.handleEditQuery(socket);
+      this.handleDeleteQuery(socket);
 
       socket.on("disconnect", () =>
         this.utilityMetersSubscription.unsubscribe(socket),
@@ -38,6 +39,12 @@ export class UtilityMetersNamespace implements SocketNamespace {
   private handleEditQuery(socket: UtilityMetersSocket) {
     socket.on("editQuery", (query: UtilityMetersQueryDTO) =>
       this.utilityMetersSubscription.addOrEditQuery(socket, query),
+    );
+  }
+
+  private handleDeleteQuery(socket: UtilityMetersSocket) {
+    socket.on("deleteQuery", (query: string) =>
+      this.utilityMetersSubscription.deleteQuery(socket, query),
     );
   }
 

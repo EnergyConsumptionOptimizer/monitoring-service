@@ -11,7 +11,8 @@ export type UtilityConsumptionsClientEvents =
   SubscribeUtilityConsumptionsEvent & EditUtilityConsumptionsQueryEvent;
 
 export type UtilityMetersClientEvents = SubscribeUtilityMetersEvent &
-  EditUtilityMetersQueryEvent;
+  EditUtilityMetersQueryEvent &
+  DeleteUtilityMetersQueryEvent;
 
 export interface SubscribeActiveSmartFurnitureHookupsEvent {
   subscribeActiveSmartFurnitureHookups: () => void;
@@ -34,4 +35,7 @@ export interface SubscribeUtilityMetersEvent {
 
 export interface EditUtilityMetersQueryEvent {
   editQuery: (queries: UtilityMetersQueryDTO) => void;
+}
+export interface DeleteUtilityMetersQueryEvent {
+  deleteQuery: (queries: string) => void;
 }
