@@ -37,7 +37,7 @@ socketManager.registerNamespaces([
 
 const config = {
   port: process.env.PORT || 3000,
-  influxURL: process.env.INFLUX_URL,
+  influxURL: `http://${process.env.INFLUXDB_HOST}:${process.env.INFLUXDB_PORT}`,
 };
 
 if (!config.influxURL) {
