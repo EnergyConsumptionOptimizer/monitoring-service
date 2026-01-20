@@ -3,6 +3,7 @@ import { Namespace, Server } from "socket.io";
 import { UtilityConsumptionsSubscription } from "@interfaces/web-sockets/namespace/subscriptions/UtilityConsumptionsSubscription";
 import { UtilityConsumptionsQueryDTO } from "@presentation/web-socket/UtilityConsumptionsQueryDTO";
 import { UtilityConsumptionsSocket } from "@interfaces/web-sockets/sockets/UtilityConsumptionsSocket";
+import { SocketAuthMiddleware } from "@interfaces/web-sockets/middleware/SocketAuthMiddleware";
 
 export class UtilityConsumptionsNamespace implements SocketNamespace {
   private readonly NAMESPACE_PATH = "/utility-consumptions";
@@ -10,6 +11,7 @@ export class UtilityConsumptionsNamespace implements SocketNamespace {
 
   constructor(
     private utilityConsumptionSubscription: UtilityConsumptionsSubscription,
+    private authMiddleware: SocketAuthMiddleware,
   ) {}
 
   name(): string {
@@ -18,6 +20,8 @@ export class UtilityConsumptionsNamespace implements SocketNamespace {
 
   setup(io: Server): void {
     this.namespace = io.of(this.name());
+
+    this.namespace.use(this.authMiddleware.authenticate);
 
     this.namespace.on("connect", (socket: UtilityConsumptionsSocket) => {
       this.handleConnection(socket);

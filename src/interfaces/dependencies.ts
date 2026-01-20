@@ -119,6 +119,7 @@ export const utilityMetersSubscription = new UtilityMetersSubscription(
 
 export const utilityConsumptionsNamespace = new UtilityConsumptionsNamespace(
   utilityConsumptionSubscription,
+  socketAuthMiddleware,
 );
 export const utilityMetersNamespace = new UtilityMetersNamespace(
   utilityMetersSubscription,
