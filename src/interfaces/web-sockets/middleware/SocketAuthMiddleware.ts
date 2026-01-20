@@ -40,11 +40,6 @@ export class SocketAuthMiddleware {
     try {
       const token = this.getAuthTokenFromHandshake(socket);
 
-      console.log(
-        "url:",
-        `${this.USER_SERVICE_URI}/${this.AUTH_BASE_URL}/${endpoint}`,
-      );
-
       await axios.get(
         `${this.USER_SERVICE_URI}/${this.AUTH_BASE_URL}/${endpoint}`,
         {
