@@ -3,48 +3,58 @@ import axios from "axios";
 import { InvalidTokenError } from "@interfaces/authMiddewareErrors";
 
 export class AuthMiddleware {
-  private checkToken = (request: Request) => {
-    const authHeader = request.headers.authorization;
+  private readonly USER_SERVICE_URI =
+    process.env.USER_SERVICE_URI ||
+    `http://${process.env.USER_SERVICE_HOST || "user"}:${process.env.USER_SERVICE_PORT || 3000}`;
 
-    if (!authHeader?.startsWith("Bearer ")) {
+  private readonly AUTH_BASE_URL = "api/internal/auth";
+
+  private getAuthTokenFromCookies = (request: Request) => {
+    const token = request.cookies?.["authToken"];
+    if (!token) {
       throw new InvalidTokenError();
     }
 
-    return authHeader;
+    return token;
   };
 
-  authenticate = async (
+  private async verifyToken(
+    endpoint: string,
     request: Request,
-    res: Response,
     next: NextFunction,
-  ): Promise<void> => {
+  ) {
     try {
-      const token = this.checkToken(request);
+      const token = this.getAuthTokenFromCookies(request);
 
-      await axios.get(process.env.USER_SERVICE_URI + "/auth/verify", {
-        headers: { Authorization: token },
-      });
+      await axios.get(
+        `${this.USER_SERVICE_URI}/${this.AUTH_BASE_URL}/${endpoint}`,
+        {
+          headers: {
+            Cookie: `authToken=${token}`,
+          },
+          withCredentials: true,
+        },
+      );
 
       next();
     } catch (error) {
       next(error);
     }
+  }
+
+  authenticate = async (
+    request: Request,
+    _res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    await this.verifyToken("verify", request, next);
   };
 
   authenticateAdmin = async (
     request: Request,
-    res: Response,
+    _res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    try {
-      const token = this.checkToken(request);
-
-      await axios.get(process.env.USER_SERVICE_URI + "/auth/verify-admin", {
-        headers: { Authorization: token },
-      });
-      next();
-    } catch (error) {
-      next(error);
-    }
+    await this.verifyToken("verify-admin", request, next);
   };
 }
