@@ -38,6 +38,13 @@ export interface MonitoringRepository {
   deleteZoneIDTagFromMeasurements(zoneID: ZoneID): Promise<void>;
 
   /**
+   * Deletes a zone id tag from all measurements.
+   *
+   * @param zoneID - The zone's id to remove from measurements.
+   */
+  deleteZoneIDTagFromMeasurements(zoneID: ZoneID): Promise<void>;
+
+  /**
    * Finds all currently active smart furniture hookups along with their
    *  * current consumption information.
    *
