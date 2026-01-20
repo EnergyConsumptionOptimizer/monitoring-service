@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { smartFurnitureHookupIDSchema } from "@presentation/web-api-requests/MeasurementSchemas";
+import { smartFurnitureHookupIDSchema } from "@presentation/validation/smartFurnitureHookupIDSchema";
 
 export const endpointSchema = z.string().nonempty();
 

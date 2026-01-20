@@ -1,9 +1,7 @@
 import { IngestingService } from "@domain/ports/IngestingService";
 import { NextFunction, type Request, type Response } from "express";
-import {
-  createMeasurementSchema,
-  smartFurnitureHookupIDSchema,
-} from "@presentation/web-api-requests/MeasurementSchemas";
+import { createMeasurementSchema } from "@presentation/web-api-requests/MeasurementSchemas";
+import { smartFurnitureHookupIDSchema } from "@presentation/validation/smartFurnitureHookupIDSchema";
 
 export class IngestingController {
   constructor(private readonly ingestingService: IngestingService) {}
