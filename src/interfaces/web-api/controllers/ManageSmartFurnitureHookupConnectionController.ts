@@ -9,6 +9,7 @@ export class ManageSmartFurnitureHookupConnectionController {
   private readonly EXTERNAL_API_HOST =
     process.env.EXTERNAL_API_HOST || "localhost";
   private readonly EXTERNAL_API_PORT = process.env.EXTERNAL_API_PORT || 80;
+  private readonly HOST = process.env.NAME || "monitoring";
 
   private convertToDockerHost(originalUrl: string): string {
     try {
@@ -35,7 +36,7 @@ export class ManageSmartFurnitureHookupConnectionController {
     const dockerizedEndpoint = this.convertToDockerHost(endpoint);
     try {
       await axios.patch(dockerizedEndpoint, {
-        endpoint_url: `http://${this.EXTERNAL_API_HOST}:${this.EXTERNAL_API_PORT}/api/internal/measurements?smart_furniture_hookup_id=${smartFurnitureHookupID.value()}`,
+        endpoint_url: `http://${this.EXTERNAL_API_HOST}:${this.EXTERNAL_API_PORT}/${this.HOST}}/api/internal/measurements?smart_furniture_hookup_id=${smartFurnitureHookupID.value()}`,
       });
       response.status(200).send();
     } catch (error) {
