@@ -11,10 +11,12 @@ import { errorHandler } from "@interfaces/web-api/middlewares/errorHandlerMiddle
 import http from "http";
 import { Server } from "socket.io";
 import { SocketsNamespaceManager } from "@interfaces/web-sockets/SocketsNamespaceManager";
+import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(express.json());
 app.use(apiRouter);
+app.use(cookieParser());
 app.use(errorHandler);
 
 const server = http.createServer(app);
@@ -42,7 +44,9 @@ const config = {
 };
 
 if (!config.influxHOST && !config.influxPORT) {
-  console.error("INFLUX_URL is not defined in environment variables.");
+  console.error(
+    "influxHOST or influxPORT are not defined in environment variables.",
+  );
   process.exit(1);
 }
 
