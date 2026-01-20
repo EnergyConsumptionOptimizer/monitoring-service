@@ -28,6 +28,11 @@ export function internalRoutes(
     measurementMaintenanceController.removeHouseholdUserTagFromMeasurements,
   );
 
+  router.delete(
+    "/measurements/zone-tags/:zoneID",
+    measurementMaintenanceController.removeZoneIDTagFromMeasurements,
+  );
+
   router.get(
     "/measurements/:utilityType",
     monitoringController.getUtilityConsumptions,
