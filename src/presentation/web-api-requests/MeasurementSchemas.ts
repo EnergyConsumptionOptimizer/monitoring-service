@@ -14,5 +14,5 @@ export const smartFurnitureHookupIDSchema = z
 export const createMeasurementSchema = z.object({
   realTimeConsumption: realTimeConsumptionSchema,
   timestamp: timestampSchema,
-  username: usernameSchema.optional(),
+  username: usernameSchema.nullish(),
 });

@@ -25,7 +25,7 @@ export class IngestingController {
         smartFurnitureHookupID,
         realTimeConsumption,
         timestamp,
-        username,
+        username ?? undefined,
       );
 
       response.status(204).send();
