@@ -37,16 +37,16 @@ export const monitoringRepositoryImpl = new MonitoringRepositoryImpl(
 );
 
 // ===== Services =====
-const smartFurnitureHookupServiceUri = `http://${process.env.HOOKUP_SERVICE_HOST ?? "smart-furniture-hookup-service"}:${process.env.HOOKUP_SERVICE_PORT ?? "3002"}`;
+const smartFurnitureHookupServiceUri = `http://${process.env.HOOKUP_SERVICE_HOST ?? "smart-furniture-hookup-service"}:${process.env.HOOKUP_SERVICE_PORT ?? "3002"}/api`;
 export const smartFurnitureHookupServiceImpl =
   new SmartFurnitureHookupServiceImpl(smartFurnitureHookupServiceUri);
 
-const userServiceUri = `http://${process.env.USER_SERVICE_HOST ?? "user-service"}:${process.env.USER_SERVICE_PORT ?? "3000"}`;
+const userServiceUri = `http://${process.env.USER_SERVICE_HOST ?? "user-service"}:${process.env.USER_SERVICE_PORT ?? "3000"}/api`;
 export const householdUserServiceImpl = new HouseholdUserServiceImpl(
   userServiceUri,
 );
 
-const mapServiceUri = `http://${process.env.MAP_SERVICE_HOST ?? "map-service"}:${process.env.MAP_SERVICE_PORT ?? "3001"}`;
+const mapServiceUri = `http://${process.env.MAP_SERVICE_HOST ?? "map-service"}:${process.env.MAP_SERVICE_PORT ?? "3001"}/api`;
 export const mapServiceImpl = new MapServiceImpl(mapServiceUri);
 
 export const ingestingServiceImpl = new IngestingServiceImpl(
