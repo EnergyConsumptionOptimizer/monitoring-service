@@ -1,7 +1,8 @@
 import axios from "axios";
 import { InvalidTokenError } from "@interfaces/authMiddewareErrors";
 import { Socket } from "socket.io";
-import cookie from "cookie";
+
+import { parse } from "cookie";
 
 type SocketNextFunction = (err?: Error) => void;
 
@@ -16,10 +17,12 @@ export class SocketAuthMiddleware {
     const cookieHeader = socket.handshake.headers.cookie;
 
     if (!cookieHeader) {
+      console.error("Cookie not found.");
       throw new InvalidTokenError();
     }
 
-    const cookies = cookie.parse(cookieHeader);
+    const cookies = parse(cookieHeader);
+
     const authToken = cookies["authToken"];
 
     if (!authToken) {
@@ -37,6 +40,11 @@ export class SocketAuthMiddleware {
     try {
       const token = this.getAuthTokenFromHandshake(socket);
 
+      console.log(
+        "url:",
+        `${this.USER_SERVICE_URI}/${this.AUTH_BASE_URL}/${endpoint}`,
+      );
+
       await axios.get(
         `${this.USER_SERVICE_URI}/${this.AUTH_BASE_URL}/${endpoint}`,
         {
@@ -48,7 +56,8 @@ export class SocketAuthMiddleware {
       );
 
       next();
-    } catch {
+    } catch (error) {
+      console.error(error);
       next(new InvalidTokenError());
     }
   }
