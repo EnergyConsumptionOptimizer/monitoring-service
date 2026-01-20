@@ -6,9 +6,11 @@ import {
 } from "@presentation/UtilityConsumptionDTO";
 
 export interface UtilityMetersDTO {
-  electricity: UtilityConsumptionDTO;
-  water: UtilityConsumptionDTO;
-  gas: UtilityConsumptionDTO;
+  utilityMeters: {
+    electricity: UtilityConsumptionDTO;
+    water: UtilityConsumptionDTO;
+    gas: UtilityConsumptionDTO;
+  };
 }
 
 export const UtilityMetersMapper = {
@@ -20,9 +22,11 @@ export const UtilityMetersMapper = {
       });
 
     return {
-      gas: toConsumptionDTO(UtilityType.GAS),
-      water: toConsumptionDTO(UtilityType.WATER),
-      electricity: toConsumptionDTO(UtilityType.ELECTRICITY),
+      utilityMeters: {
+        gas: toConsumptionDTO(UtilityType.GAS),
+        water: toConsumptionDTO(UtilityType.WATER),
+        electricity: toConsumptionDTO(UtilityType.ELECTRICITY),
+      },
     };
   },
 };

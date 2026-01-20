@@ -1,8 +1,13 @@
 import { UtilityMetersDTO } from "@presentation/UtilityMetersDTO";
+import { UtilityConsumptionDTO } from "@presentation/UtilityConsumptionDTO";
 
 export interface UtilityMetersQueryResultDTO {
   label: string;
-  utilityMeters: UtilityMetersDTO;
+  utilityMeters: {
+    electricity: UtilityConsumptionDTO;
+    water: UtilityConsumptionDTO;
+    gas: UtilityConsumptionDTO;
+  };
 }
 
 export const UtilityMetersQueryResultMapper = {
@@ -12,7 +17,7 @@ export const UtilityMetersQueryResultMapper = {
   ): UtilityMetersQueryResultDTO {
     return {
       label,
-      utilityMeters,
+      utilityMeters: utilityMeters.utilityMeters,
     };
   },
 };
