@@ -19,6 +19,7 @@ export const mockMeasurementMaintenanceService: MeasurementMaintenanceService =
     removeHouseholdUserTagFromMeasurements: vi
       .fn()
       .mockResolvedValue(undefined),
+    removeZoneIDTagFromMeasurements: vi.fn().mockResolvedValue(undefined),
   };
 
 export const mockMonitoringService: MonitoringService = {
