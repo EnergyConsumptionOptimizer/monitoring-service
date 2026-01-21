@@ -37,5 +37,5 @@ export interface EditUtilityMetersQueryEvent {
   editQuery: (queries: UtilityMetersQueryDTO) => void;
 }
 export interface DeleteUtilityMetersQueryEvent {
-  deleteQuery: (queries: string) => void;
+  deleteQuery: (queryLabel: string) => void;
 }

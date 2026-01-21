@@ -43,8 +43,8 @@ export class UtilityMetersNamespace implements SocketNamespace {
   }
 
   private handleDeleteQuery(socket: UtilityMetersSocket) {
-    socket.on("deleteQuery", (query: string) =>
-      this.utilityMetersSubscription.deleteQuery(socket, query),
+    socket.on("deleteQuery", (queryLabel: string) =>
+      this.utilityMetersSubscription.deleteQuery(socket, queryLabel),
     );
   }
 
