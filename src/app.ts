@@ -4,8 +4,8 @@ import cookieParser from "cookie-parser";
 import { errorHandler } from "@interfaces/web-api/middlewares/errorHandlerMiddleware";
 
 const app = express();
-app.use(apiRouter);
 app.use(express.json());
+app.use(apiRouter);
 app.use(cookieParser());
 app.use(errorHandler);
 
