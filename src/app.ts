@@ -1,5 +1,12 @@
-function greet(name: string): string {
-  return `Hello, ${name}!`;
-}
+import express from "express";
+import { apiRouter } from "@interfaces/dependencies";
+import cookieParser from "cookie-parser";
+import { errorHandler } from "@interfaces/web-api/middlewares/errorHandlerMiddleware";
 
-console.log(greet("World"));
+const app = express();
+app.use(express.json());
+app.use(apiRouter);
+app.use(cookieParser());
+app.use(errorHandler);
+
+export default app;

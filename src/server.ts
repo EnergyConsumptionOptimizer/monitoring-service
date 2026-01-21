@@ -1,23 +1,14 @@
 import "dotenv/config";
-import express from "express";
 import {
-  apiRouter,
   influxDBClient,
   realTimeNamespace,
   utilityConsumptionsNamespace,
   utilityMetersNamespace,
 } from "@interfaces/dependencies";
-import { errorHandler } from "@interfaces/web-api/middlewares/errorHandlerMiddleware";
 import http from "http";
 import { Server } from "socket.io";
 import { SocketsNamespaceManager } from "@interfaces/web-sockets/SocketsNamespaceManager";
-import cookieParser from "cookie-parser";
-
-const app = express();
-app.use(express.json());
-app.use(apiRouter);
-app.use(cookieParser());
-app.use(errorHandler);
+import app from "./app";
 
 const server = http.createServer(app);
 
