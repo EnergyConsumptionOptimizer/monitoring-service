@@ -37,7 +37,7 @@ export const monitoringRepositoryImpl = new MonitoringRepositoryImpl(
 );
 
 // ===== Services =====
-const smartFurnitureHookupServiceUri = `http://${process.env.HOOKUP_SERVICE_HOST ?? "smart-furniture-hookup-service"}:${process.env.HOOKUP_SERVICE_PORT ?? "3002"}`;
+const smartFurnitureHookupServiceUri = `http://${process.env.HOOKUP_SERVICE_HOST ?? "hookup-service"}:${process.env.HOOKUP_SERVICE_PORT ?? "3000"}`;
 export const smartFurnitureHookupServiceImpl =
   new SmartFurnitureHookupServiceImpl(smartFurnitureHookupServiceUri);
 

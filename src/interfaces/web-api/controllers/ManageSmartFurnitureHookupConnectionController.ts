@@ -50,9 +50,10 @@ export class ManageSmartFurnitureHookupConnectionController {
     next: NextFunction,
   ) => {
     const endpoint = endpointSchema.parse(request.body.endpoint);
+    const dockerizedEndpoint = this.convertToDockerHost(endpoint);
 
     try {
-      await axios.patch(endpoint, {
+      await axios.patch(dockerizedEndpoint, {
         endpoint_url: ``,
       });
       response.status(200).send();
