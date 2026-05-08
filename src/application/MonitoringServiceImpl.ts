@@ -1,12 +1,12 @@
-import { MonitoringService } from "@domain/ports/MonitoringService";
-import { MonitoringRepository } from "@domain/ports/MonitoringRepository";
 import { UtilityMeters } from "@domain/UtilityMeters";
-import { TimeRangeFilter } from "@domain/utils/TimeRangeFilter";
-import { TagsFilter } from "@domain/utils/TagsFilter";
+import { TimeRangeFilter } from "@application/utils/TimeRangeFilter";
+import { TagsFilter } from "@application/utils/TagsFilter";
 import { UtilityType } from "@domain/UtilityType";
-import { TimeSeriesFilter } from "@domain/utils/TimeSeriesFilter";
+import { TimeSeriesFilter } from "@application/utils/TimeSeriesFilter";
 import { UtilityConsumptionPoint } from "@domain/UtilityConsumptionPoint";
 import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
+import { MonitoringService } from "@application/inbound/MonitoringService";
+import { MonitoringRepository } from "@application/outbound/MonitoringRepository";
 
 export class MonitoringServiceImpl implements MonitoringService {
   constructor(private readonly monitoringRepository: MonitoringRepository) {}

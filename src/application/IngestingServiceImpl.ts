@@ -1,12 +1,12 @@
-import { IngestingService } from "@domain/ports/IngestingService";
-import { MonitoringRepository } from "@domain/ports/MonitoringRepository";
-import { SmartFurnitureHookupService } from "./ports/SmartFurnitureHookupService";
-import { HouseholdUserService } from "./ports/HouseholdUserService";
 import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
 import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
 import { InvalidSmartFurnitureHookupIDError } from "@domain/errors";
 import { MeasurementFactory } from "@domain/MeasurementFactory";
-import { MapService } from "@application/ports/MapService";
+import { IngestingService } from "@application/inbound/IngestingService";
+import { MonitoringRepository } from "@application/outbound/MonitoringRepository";
+import { SmartFurnitureHookupService } from "@application/outbound/SmartFurnitureHookupService";
+import { HouseholdUserService } from "@application/outbound/HouseholdUserService";
+import { MapService } from "@application/outbound/MapService";
 
 export class IngestingServiceImpl implements IngestingService {
   constructor(

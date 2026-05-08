@@ -1,7 +1,7 @@
 import express from "express";
-import { apiRouter } from "@interfaces/dependencies";
 import cookieParser from "cookie-parser";
-import { errorHandler } from "@interfaces/web-api/middlewares/errorHandlerMiddleware";
+import { apiRouter } from "./dependencies";
+import { errorHandler } from "@presentation/web-api/middlewares/errorHandlerMiddleware";
 
 const app = express();
 app.use(express.json());

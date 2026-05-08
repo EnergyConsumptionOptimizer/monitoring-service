@@ -1,7 +1,7 @@
-import { MeasurementMaintenanceService } from "@domain/ports/MeasurementMaintenanceService";
-import { MonitoringRepository } from "@domain/ports/MonitoringRepository";
 import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
 import { ZoneID } from "@domain/ZoneID";
+import { MeasurementMaintenanceService } from "@application/inbound/MeasurementMaintenanceService";
+import { MonitoringRepository } from "@application/outbound/MonitoringRepository";
 
 export class MeasurementMaintenanceServiceImpl implements MeasurementMaintenanceService {
   constructor(private readonly monitoringRepository: MonitoringRepository) {}

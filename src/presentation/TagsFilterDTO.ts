@@ -1,4 +1,4 @@
-import { TagsFilter } from "@domain/utils/TagsFilter";
+import { TagsFilter } from "@application/utils/TagsFilter";
 import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
 import { ZoneID } from "@domain/ZoneID";
 

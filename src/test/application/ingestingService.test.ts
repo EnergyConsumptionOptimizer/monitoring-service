@@ -1,14 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { IngestingServiceImpl } from "@application/IngestingServiceImpl";
-import { SmartFurnitureHookupService } from "@application/ports/SmartFurnitureHookupService";
-import { HouseholdUserService } from "@application/ports/HouseholdUserService";
-import { InMemoryMonitoringRepository } from "../store/InMemoryMonitoringRepository";
-import { SmartFurnitureHookup } from "@application/SmartFurnitureHookup";
+import { InMemoryMonitoringRepository } from "../storage/InMemoryMonitoringRepository";
 import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
 import { UtilityType } from "@domain/UtilityType";
 import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
 import { InvalidSmartFurnitureHookupIDError } from "@domain/errors";
-import { MapService } from "@application/ports/MapService";
+import { SmartFurnitureHookupService } from "@application/outbound/SmartFurnitureHookupService";
+import { HouseholdUserService } from "@application/outbound/HouseholdUserService";
+import { MapService } from "@application/outbound/MapService";
+import { SmartFurnitureHookup } from "@domain/SmartFurnitureHookup";
 
 describe("IngestingServiceImpl", () => {
   let ingestingService: IngestingServiceImpl;

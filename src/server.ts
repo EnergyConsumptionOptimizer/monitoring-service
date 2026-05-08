@@ -4,10 +4,10 @@ import {
   realTimeNamespace,
   utilityConsumptionsNamespace,
   utilityMetersNamespace,
-} from "@interfaces/dependencies";
+} from "./dependencies";
 import http from "http";
 import { Server } from "socket.io";
-import { SocketsNamespaceManager } from "@interfaces/web-sockets/SocketsNamespaceManager";
+import { SocketsNamespaceManager } from "@presentation/web-sockets/SocketsNamespaceManager";
 import app from "./app";
 
 const server = http.createServer(app);
