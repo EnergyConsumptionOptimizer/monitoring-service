@@ -1,63 +1,25 @@
 import "dotenv/config";
-import {
-  influxDBClient,
-  realTimeNamespace,
-  utilityConsumptionsNamespace,
-  utilityMetersNamespace,
-} from "./dependencies";
-import http from "http";
-import { Server } from "socket.io";
-import { SocketsNamespaceManager } from "@presentation/web-sockets/SocketsNamespaceManager";
-import app from "./app";
+import { createLogger } from "./logger";
+import { config } from "@bootstrap/config";
+import { startInstrumentation } from "./instrumentation";
+import { composeServer } from "@bootstrap/composeServer";
+import { setupGracefulShutdown } from "@bootstrap/shutdown";
+import { connectToInfluxDatabase } from "@bootstrap/InfluxInstance";
 
-const server = http.createServer(app);
+const rootLogger = createLogger(config);
+const logger = rootLogger.child({ component: "Server" });
+const sdk = startInstrumentation(rootLogger);
 
-const io: Server = new Server(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
+async function start(): Promise<void> {
+  await connectToInfluxDatabase(logger);
 
-const socketManager = new SocketsNamespaceManager(io);
+  const composed = await composeServer(rootLogger);
 
-socketManager.registerNamespaces([
-  realTimeNamespace,
-  utilityConsumptionsNamespace,
-  utilityMetersNamespace,
-]);
+  const server = composed.server.listen(config.port, () => {
+    logger.info({ port: config.port }, "listening");
+  });
 
-const config = {
-  port: process.env.PORT || 3000,
-  influxHOST: process.env.INFLUXDB_HOST,
-  influxPORT: process.env.INFLUXDB_PORT,
-};
-
-if (!config.influxHOST && !config.influxPORT) {
-  console.error(
-    "influxHOST or influxPORT are not defined in environment variables.",
-  );
-  process.exit(1);
+  setupGracefulShutdown(server, sdk, logger);
 }
 
-const connectDatabase = async () => {
-  const connection = await influxDBClient.checkConnection();
-  if (!connection) {
-    process.exit(1);
-  }
-
-  console.log("Connected to Database");
-};
-
-const launchServer = () => {
-  server.listen(config.port, () => {
-    console.log(`Server running on port ${config.port}`);
-  });
-};
-
-const start = () => {
-  connectDatabase().then(() => launchServer());
-};
-
-start();
+void start();

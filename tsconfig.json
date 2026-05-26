@@ -20,7 +20,8 @@
       "@application/*": ["./application/*"],
       "@presentation/*": ["./presentation/*"],
       "@storage/*": ["./infrastructure/*"],
-      "@interfaces/*": ["./interfaces/*"],
+      "@bootstrap/*": ["./bootstrap/*"],
+      "@test/*": ["./test/*"],
     }
   },
   "include": ["src/**/*"],
