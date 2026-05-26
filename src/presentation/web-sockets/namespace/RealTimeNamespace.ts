@@ -7,19 +7,23 @@ import { RealTimeUtilityMetersRoom } from "@presentation/web-sockets/namespace/r
 import { NamespaceRoom } from "@presentation/web-sockets/namespace/rooms/NamespaceRoom";
 import { RealTimeSocket } from "@presentation/web-sockets/sockets/RealTimeSocket";
 import { SocketAuthMiddleware } from "@presentation/web-sockets/middleware/SocketAuthMiddleware";
+import { Logger } from "pino";
 
 export class RealTimeNamespace implements SocketNamespace {
   private readonly NAMESPACE_PATH = "/real-time";
   private namespace?: Namespace<RealTimeClientEvents, RealTimeServerEvents>;
   private rooms: NamespaceRoom[] = [];
+  readonly #logger?: Logger;
 
   constructor(
     private activeSmartFurnitureHookupsRoom: ActiveSmartFurnitureHookupsRoom,
     private utilityMetersRoom: RealTimeUtilityMetersRoom,
     private authMiddleware: SocketAuthMiddleware,
+    logger?: Logger,
   ) {
     this.rooms.push(activeSmartFurnitureHookupsRoom);
     this.rooms.push(utilityMetersRoom);
+    this.#logger = logger;
   }
 
   name(): string {
@@ -39,14 +43,20 @@ export class RealTimeNamespace implements SocketNamespace {
       this.handleActiveSmartFurnitureHookupSubscription(socket);
       this.handleUtilityMetersSubscription(socket);
       socket.on("disconnecting", () => {
-        console.log(`[real-time] ${socket.id} disconnecting`);
+        this.#logger?.debug(
+          { socket: socket.id, namespace: this.NAMESPACE_PATH },
+          "Disconnecting",
+        );
 
         this.rooms.forEach((room) => {
           room.unsubscribe(socket);
         });
       });
       socket.on("disconnect", () => {
-        console.log(`[real-time] ${socket.id} disconnected`);
+        this.#logger?.debug(
+          { socket: socket.id, namespace: this.NAMESPACE_PATH },
+          "disconnected",
+        );
       });
     });
   }
@@ -64,7 +74,10 @@ export class RealTimeNamespace implements SocketNamespace {
   }
 
   private handleRoomSubscription(socket: RealTimeSocket, room: NamespaceRoom) {
-    console.log(`[real-time] Socket ${socket.id} joined room "${room.name()}"`);
+    this.#logger?.debug(
+      { socket: socket.id, namespace: this.NAMESPACE_PATH, room: room.name },
+      "Socket joined room",
+    );
     socket.join(room.name());
 
     room.subscribe(socket);

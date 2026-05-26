@@ -1,74 +1,85 @@
-import axios from "axios";
-
 import { Socket } from "socket.io";
-
-import { parse } from "cookie";
-import { InvalidTokenError } from "@presentation/authMiddewareErrors";
+import { type UserRole, UserRoles } from "@domain/values/UserRole";
 
 type SocketNextFunction = (err?: Error) => void;
 
+export interface AuthenticatedUser {
+  readonly id: string;
+  readonly username: string;
+  readonly role: UserRole;
+}
+
+export class InvalidTokenError extends Error {
+  constructor() {
+    super("Authentication required");
+    this.name = "InvalidTokenError";
+  }
+}
+
+export class ForbiddenError extends Error {
+  constructor() {
+    super("Forbidden: Insufficient permissions");
+    this.name = "ForbiddenError";
+  }
+}
+
 export class SocketAuthMiddleware {
-  private readonly USER_SERVICE_URI =
-    process.env.USER_SERVICE_URI ||
-    `http://${process.env.USER_SERVICE_HOST || "user"}:${process.env.USER_SERVICE_PORT || 3000}`;
+  private extractUser(socket: Socket): AuthenticatedUser {
+    const headers = socket.handshake.headers;
 
-  private readonly AUTH_BASE_URL = "api/internal/auth";
+    const userId = headers["x-user-id"];
+    const username = headers["x-user-username"];
+    const userRole = headers["x-user-role"];
 
-  private getAuthTokenFromHandshake = (socket: Socket): string => {
-    const cookieHeader = socket.handshake.headers.cookie;
-
-    if (!cookieHeader) {
-      console.error("Cookie not found.");
+    if (typeof userId !== "string" || !userId) {
       throw new InvalidTokenError();
     }
 
-    const cookies = parse(cookieHeader);
-
-    const authToken = cookies["authToken"];
-
-    if (!authToken) {
-      throw new InvalidTokenError();
-    }
-
-    return authToken;
-  };
-
-  private async verifyToken(
-    endpoint: string,
-    socket: Socket,
-    next: SocketNextFunction,
-  ) {
-    try {
-      const token = this.getAuthTokenFromHandshake(socket);
-
-      await axios.get(
-        `${this.USER_SERVICE_URI}/${this.AUTH_BASE_URL}/${endpoint}`,
-        {
-          headers: {
-            Cookie: `authToken=${token}`,
-          },
-          withCredentials: true,
-        },
-      );
-
-      next();
-    } catch (error) {
-      console.error(error);
-      next(new InvalidTokenError());
-    }
+    return {
+      id: userId,
+      username: typeof username === "string" ? username : "",
+      role: (userRole as UserRole) || UserRoles.HOUSEHOLD,
+    };
   }
 
-  authenticate = async (
-    socket: Socket,
-    next: SocketNextFunction,
-  ): Promise<void> => {
-    await this.verifyToken("verify", socket, next);
+  authenticate = (socket: Socket, next: SocketNextFunction): void => {
+    try {
+      socket.data.user = this.extractUser(socket);
+      next();
+    } catch (error) {
+      next(error as Error);
+    }
   };
 
-  authenticateAdmin = async (
-    socket: Socket,
-    next: SocketNextFunction,
-  ): Promise<void> => {
-    await this.verifyToken("verify-admin", socket, next);
+  authenticateAdmin = (socket: Socket, next: SocketNextFunction): void => {
+    try {
+      const user = this.extractUser(socket);
+
+      if (user.role !== UserRoles.ADMIN) {
+        next(new ForbiddenError());
+      } else {
+        socket.data.user = user;
+        next();
+      }
+    } catch (error) {
+      next(error as Error);
+    }
+  };
+
+  requireRole = (...roles: UserRole[]) => {
+    return (socket: Socket, next: SocketNextFunction): void => {
+      try {
+        const user = this.extractUser(socket);
+
+        if (!roles.includes(user.role)) {
+          next(new ForbiddenError());
+        } else {
+          socket.data.user = user;
+          next();
+        }
+      } catch (error) {
+        next(error as Error);
+      }
+    };
   };
 }

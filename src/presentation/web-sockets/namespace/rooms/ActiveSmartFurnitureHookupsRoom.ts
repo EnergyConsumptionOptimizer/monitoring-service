@@ -5,27 +5,34 @@ import { NamespaceRoom } from "@presentation/web-sockets/namespace/rooms/Namespa
 import { ActiveSmartFurnitureHookupsServersEvents } from "@presentation/web-sockets/events/serverEvents";
 import { ActiveSmartFurnitureHookupsSocket } from "@presentation/web-sockets/sockets/ActiveSmartFurnitureHookupsSocket";
 import { ActiveSmartFurnitureHookupsClientEvents } from "@presentation/web-sockets/events/clientEvents";
-import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
+import { ActiveSmartFurnitureHookup } from "@domain/entities/ActiveSmartFurnitureHookup";
 import {
   ActiveSmartFurnitureHookupsDTO,
   ActiveSmartFurnitureHookupsMapper,
 } from "@presentation/ActiveSmartFurnitureHookupsDTO";
+import { Logger } from "pino";
 
 export class ActiveSmartFurnitureHookupsRoom implements NamespaceRoom {
-  private realTimePeriodicBroadcaster?: PeriodicBroadcaster;
-  private readonly BROADCAST_INTERVAL_MS = 5000;
+  readonly #activeSmartFurnitureHookupsHandler: ActiveSmartFurnitureHookupsHandler;
+  readonly #logger?: Logger;
 
-  private readonly ROOM_NAME: string = "active-smart-furniture-hookup-room";
-
-  private readonly FAIL_DATA_FETCH_MSG =
+  #realTimePeriodicBroadcaster?: PeriodicBroadcaster;
+  readonly #BROADCAST_INTERVAL_MS = 5000;
+  readonly #ROOM_NAME: string = "active-smart-furniture-hookup-room";
+  readonly #FAIL_DATA_FETCH_MSG =
     "Failed to fetch active smart furniture hookup";
 
   constructor(
-    private activeSmartFurnitureHookupsHandler: ActiveSmartFurnitureHookupsHandler,
-  ) {}
+    activeSmartFurnitureHookupsHandler: ActiveSmartFurnitureHookupsHandler,
+    logger?: Logger,
+  ) {
+    this.#activeSmartFurnitureHookupsHandler =
+      activeSmartFurnitureHookupsHandler;
+    this.#logger = logger;
+  }
 
   name() {
-    return this.ROOM_NAME;
+    return this.#ROOM_NAME;
   }
 
   setup(
@@ -34,36 +41,37 @@ export class ActiveSmartFurnitureHookupsRoom implements NamespaceRoom {
       ActiveSmartFurnitureHookupsServersEvents
     >,
   ) {
-    this.realTimePeriodicBroadcaster = new PeriodicBroadcaster(
+    this.#realTimePeriodicBroadcaster = new PeriodicBroadcaster(
       "active-smart-furniture-hookup",
       async () => {
         try {
           const data =
-            await this.activeSmartFurnitureHookupsHandler.getActiveSmartFurnitureHookups();
+            await this.#activeSmartFurnitureHookupsHandler.getActiveSmartFurnitureHookups();
 
           namespace
-            .to(this.ROOM_NAME)
+            .to(this.#ROOM_NAME)
             .emit(
               "activeSmartFurnitureHookupsUpdate",
               this.parseActiveSmartFurnitureHookups(data),
             );
         } catch (error) {
-          console.error(
+          this.#logger?.error(
+            { error },
             "Failed to send data about active smart furniture hookup",
-            error,
           );
-          namespace.emit("error", this.FAIL_DATA_FETCH_MSG);
+          namespace.emit("error", this.#FAIL_DATA_FETCH_MSG);
         }
       },
-      this.BROADCAST_INTERVAL_MS,
+      this.#BROADCAST_INTERVAL_MS,
+      this.#logger,
     );
   }
 
   subscribe(socket: ActiveSmartFurnitureHookupsSocket) {
-    this.realTimePeriodicBroadcaster?.newClient(socket);
+    this.#realTimePeriodicBroadcaster?.newClient(socket);
 
-    this.activeSmartFurnitureHookupsHandler
-      .getCachedOrFreshData(this.BROADCAST_INTERVAL_MS)
+    this.#activeSmartFurnitureHookupsHandler
+      .getCachedOrFreshData(this.#BROADCAST_INTERVAL_MS)
       .then((data: ActiveSmartFurnitureHookup[]) => {
         socket.emit(
           "activeSmartFurnitureHookupsUpdate",
@@ -71,11 +79,11 @@ export class ActiveSmartFurnitureHookupsRoom implements NamespaceRoom {
         );
       })
       .catch((error) => {
-        console.error(
-          `Failed to send initial data about active smart furniture hookup to ${socket.id}:`,
-          error,
+        this.#logger?.error(
+          { socket: socket.id, error },
+          "Failed to send initial data about active smart furniture hookup",
         );
-        socket.emit("error", this.FAIL_DATA_FETCH_MSG);
+        socket.emit("error", this.#FAIL_DATA_FETCH_MSG);
       });
   }
 
@@ -86,8 +94,8 @@ export class ActiveSmartFurnitureHookupsRoom implements NamespaceRoom {
   }
 
   unsubscribe(socket: ActiveSmartFurnitureHookupsSocket) {
-    if (socket.rooms.has(this.ROOM_NAME)) {
-      this.realTimePeriodicBroadcaster?.clientDisconnected(socket);
+    if (socket.rooms.has(this.#ROOM_NAME)) {
+      this.#realTimePeriodicBroadcaster?.clientDisconnected(socket);
     }
   }
 }

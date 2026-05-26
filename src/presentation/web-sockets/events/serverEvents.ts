@@ -4,11 +4,11 @@ import { UtilityConsumptionsQueryResultDTO } from "@presentation/UtilityConsumpt
 import { UtilityMetersQueryResultDTO } from "@presentation/UtilityMetersQueryResultDTO";
 
 export type RealTimeServerEvents = ErrorEvent &
-  ActiveSmartFurnitureHookupsUpdate &
+  ActiveSmartFurnitureHookupsUpdateEvent &
   RealTimeUtilityMetersUpdateEvent;
 
 export type ActiveSmartFurnitureHookupsServersEvents = ErrorEvent &
-  ActiveSmartFurnitureHookupsUpdate;
+  ActiveSmartFurnitureHookupsUpdateEvent;
 
 export type RealTimeUtilityMetersServersEvents = ErrorEvent &
   RealTimeUtilityMetersUpdateEvent;
@@ -25,7 +25,7 @@ export interface ErrorEvent {
   error: (error: string) => void;
 }
 
-export interface ActiveSmartFurnitureHookupsUpdate {
+export interface ActiveSmartFurnitureHookupsUpdateEvent {
   activeSmartFurnitureHookupsUpdate: (
     data: ActiveSmartFurnitureHookupsDTO,
   ) => void;

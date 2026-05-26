@@ -1,11 +1,15 @@
-import { utilityTypeFromString } from "@domain/UtilityType";
 import { UtilityConsumptionsQueryDTO } from "@presentation/UtilityConsumptionsQueryDTO";
-import { UtilityConsumptionsQueryResultMapper } from "@presentation/UtilityConsumptionsQueryResultDTO";
+import {
+  UtilityConsumptionsQueryResultDTO,
+  UtilityConsumptionsQueryResultMapper,
+} from "@presentation/UtilityConsumptionsQueryResultDTO";
 import { UtilityConsumptionsSocket } from "@presentation/web-sockets/sockets/UtilityConsumptionsSocket";
 import { UtilityConsumptionsHandler } from "@presentation/web-sockets/handlers/UtilityConsumptionsHandler";
 import { ClientSocketLock } from "@presentation/web-sockets/ClientSocketLock";
 import { PeriodicSubscription } from "@presentation/web-sockets/PeriodicSubscription";
-import { UtilityConsumptionMapper } from "@presentation/TagsFilterDTO";
+import { UtilityConsumptionPoint } from "@domain/values/UtilityConsumptionPoint";
+import { UtilityType } from "@domain/values/UtilityType";
+import { Logger } from "pino";
 
 export class UtilityConsumptionsSubscription {
   private periodicSubscription: PeriodicSubscription =
@@ -13,17 +17,26 @@ export class UtilityConsumptionsSubscription {
   private clientsQueries = new Map<string, UtilityConsumptionsQueryDTO[]>();
 
   private lock: ClientSocketLock = new ClientSocketLock();
-
+  readonly #logger?: Logger;
   constructor(
     private readonly utilityConsumptionHandler: UtilityConsumptionsHandler,
-  ) {}
+    logger?: Logger,
+  ) {
+    this.#logger = logger;
+  }
 
   async subscribe(
     socket: UtilityConsumptionsSocket,
     queries: UtilityConsumptionsQueryDTO[],
   ) {
     if (!queries || queries.length === 0) {
-      console.log("No queries found.");
+      this.#logger?.error(
+        {
+          socket: socket.id,
+          queries: queries,
+        },
+        "No queries found",
+      );
       socket.emit("error", "At least one query must be provided");
       return;
     }
@@ -33,6 +46,13 @@ export class UtilityConsumptionsSubscription {
     try {
       await this.sendUtilityConsumptionsUpdate(socket);
     } catch (error) {
+      this.#logger?.error(
+        {
+          socket: socket.id,
+          queries: queries,
+        },
+        "Initial update failed",
+      );
       socket.emit("error", `Initial update failed: ${error}`);
       this.clientsQueries.delete(socket.id);
       return;
@@ -55,7 +75,14 @@ export class UtilityConsumptionsSubscription {
     const queries = this.clientsQueries.get(socket.id);
 
     if (!queries) {
-      socket.emit("error", "No active subscription found");
+      this.#logger?.error(
+        {
+          socket: socket.id,
+          queries: queries,
+        },
+        "No query found",
+      );
+      socket.emit("error", "No query found");
       return;
     }
 
@@ -100,7 +127,12 @@ export class UtilityConsumptionsSubscription {
       socket.emit("utilityConsumptionsUpdate", updates);
     } catch (error) {
       socket.emit("error", `Failed to fetch utility consumptions: ${error}`);
-      console.error(`Error for ${socket.id}:`, error);
+      this.#logger?.error(
+        {
+          socket: socket.id,
+        },
+        "Failed to fetch utility consumptions",
+      );
     } finally {
       release();
     }
@@ -108,19 +140,16 @@ export class UtilityConsumptionsSubscription {
 
   private async getUtilityConsumptionsQueryResult(
     query: UtilityConsumptionsQueryDTO,
-  ) {
-    const utilityType = utilityTypeFromString(query.utilityType);
-    const utilityConsumptionsData =
-      await this.utilityConsumptionHandler.getUtilityConsumptions(
-        utilityType,
-        query.filter,
-        query.tagsFilter
-          ? UtilityConsumptionMapper.toDomain(query.tagsFilter)
-          : undefined,
-      );
+  ): Promise<UtilityConsumptionsQueryResultDTO> {
+    const utilityType = query.utilityType;
+    const utilityConsumptionsData: UtilityConsumptionPoint[] =
+      await this.utilityConsumptionHandler.getUtilityConsumptions(utilityType, {
+        ...query.filter,
+        ...query.tagsFilter,
+      });
 
     return UtilityConsumptionsQueryResultMapper.toDTO(
-      utilityType,
+      UtilityType.from(utilityType) as UtilityType,
       query.label,
       utilityConsumptionsData,
     );

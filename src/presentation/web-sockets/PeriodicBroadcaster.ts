@@ -1,24 +1,34 @@
 import { Socket } from "socket.io";
+import { Logger } from "pino";
 
 export class PeriodicBroadcaster {
   private connectedClients = 0;
   private broadcastInterval?: NodeJS.Timeout;
+  readonly #logger?: Logger;
 
   constructor(
     private readonly label: string,
     private broadcastCallback: () => void,
     private BROADCAST_INTERVAL_MS = 5000,
-  ) {}
+    logger?: Logger,
+  ) {
+    this.#logger = logger;
+  }
 
   newClient(socket: Socket) {
     this.connectedClients++;
-    console.log(
-      `[${this.label}] Client connected: ${socket.id}. Total: ${this.connectedClients}`,
+
+    this.#logger?.debug(
+      { socket: socket.id, label: this.label },
+      `New client connected  Total: ${this.connectedClients}`,
     );
 
     if (this.connectedClients === 1) {
       this.startBroadcasting().catch((error) => {
-        console.error(`[${this.label}] Failed to start to broadcast`, error);
+        this.#logger?.error(
+          { socket: socket.id, label: this.label, error },
+          "Failed to start to broadcast",
+        );
         socket.emit("error", "Failed to connect");
         this.connectedClients--;
       });
@@ -27,8 +37,10 @@ export class PeriodicBroadcaster {
 
   clientDisconnected(socket: Socket) {
     this.connectedClients--;
-    console.log(
-      `[${this.label}] Client disconnected: ${socket.id}. Total: ${this.connectedClients}`,
+
+    this.#logger?.debug(
+      { socket: socket.id, label: this.label },
+      `Client disconnected. Total: ${this.connectedClients}`,
     );
 
     if (this.connectedClients === 0) {
@@ -37,7 +49,7 @@ export class PeriodicBroadcaster {
   }
 
   private async startBroadcasting() {
-    console.log(`[${this.label}] Starting broadcast...`);
+    this.#logger?.debug({ label: this.label }, "Starting broadcast...");
 
     this.broadcastInterval = setInterval(
       this.broadcastCallback,
@@ -47,7 +59,8 @@ export class PeriodicBroadcaster {
 
   stopBroadcasting(): void {
     if (this.broadcastInterval) {
-      console.log(`[${this.label}] Stopping broadcast...`);
+      this.#logger?.debug({ label: this.label }, "Stopping broadcast...");
+
       clearInterval(this.broadcastInterval);
       this.broadcastInterval = undefined;
     }

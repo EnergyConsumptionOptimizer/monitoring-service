@@ -4,16 +4,23 @@ import { UtilityMetersHandler } from "@presentation/web-sockets/handlers/Utility
 import { UtilityMetersSocket } from "@presentation/web-sockets/sockets/UtilityMetersSocket";
 import { UtilityMetersQueryDTO } from "@presentation/UtilityMetersQueryDTO";
 import { UtilityMetersQueryResultMapper } from "@presentation/UtilityMetersQueryResultDTO";
-import { UtilityConsumptionMapper } from "@presentation/TagsFilterDTO";
+import { UtilityMeters } from "@domain/values/UtilityMeters";
+import { UtilityMetersMapper } from "@presentation/UtilityMetersDTO";
+import { Logger } from "pino";
 
 export class UtilityMetersSubscription {
+  readonly #logger?: Logger;
+  readonly #utilityMetersHandler: UtilityMetersHandler;
   private periodicSubscription: PeriodicSubscription =
     new PeriodicSubscription();
   private clientsQueries = new Map<string, UtilityMetersQueryDTO[]>();
 
   private lock: ClientSocketLock = new ClientSocketLock();
 
-  constructor(private readonly utilityMetersHandler: UtilityMetersHandler) {}
+  constructor(utilityMetersHandler: UtilityMetersHandler, logger?: Logger) {
+    this.#utilityMetersHandler = utilityMetersHandler;
+    this.#logger = logger;
+  }
 
   async subscribe(
     socket: UtilityMetersSocket,
@@ -21,7 +28,13 @@ export class UtilityMetersSubscription {
     interval?: number,
   ) {
     if (!queries || queries.length === 0) {
-      console.log("No queries found.");
+      this.#logger?.error(
+        {
+          socket: socket.id,
+          queries: queries,
+        },
+        "No queries found",
+      );
       socket.emit("error", "At least one query must be provided");
       return;
     }
@@ -29,8 +42,15 @@ export class UtilityMetersSubscription {
     this.clientsQueries.set(socket.id, queries);
 
     try {
-      await this.sendUtilityMetersUpdate(socket);
+      await this.#sendUtilityMetersUpdate(socket);
     } catch (error) {
+      this.#logger?.error(
+        {
+          socket: socket.id,
+          error,
+        },
+        "Initial update failed",
+      );
       socket.emit("error", `Initial update failed: ${error}`);
       this.clientsQueries.delete(socket.id);
       return;
@@ -39,7 +59,7 @@ export class UtilityMetersSubscription {
     this.periodicSubscription.newSubscription(
       socket,
       async () => {
-        await this.sendUtilityMetersUpdate(socket);
+        await this.#sendUtilityMetersUpdate(socket);
       },
       interval,
     );
@@ -57,7 +77,13 @@ export class UtilityMetersSubscription {
     const queries = this.clientsQueries.get(socket.id);
 
     if (!queries) {
-      socket.emit("error", "No active subscription found");
+      this.#logger?.error(
+        {
+          socket: socket.id,
+        },
+        "No query found",
+      );
+      socket.emit("error", "No query found");
       return;
     }
 
@@ -70,7 +96,7 @@ export class UtilityMetersSubscription {
         queries.splice(queryIndex, 1);
       }
 
-      const update = await this.getUtilityMetersQueryResult(query);
+      const update = await this.#getUtilityMetersQueryResult(query);
 
       socket.emit("utilityMetersQueryUpdate", update);
 
@@ -86,7 +112,13 @@ export class UtilityMetersSubscription {
     const queries = this.clientsQueries.get(socket.id);
 
     if (!queries) {
-      socket.emit("error", "No active subscription found");
+      this.#logger?.error(
+        {
+          socket: socket.id,
+        },
+        "No query found",
+      );
+      socket.emit("error", "No query found");
       return;
     }
 
@@ -96,6 +128,13 @@ export class UtilityMetersSubscription {
       const index = queries.findIndex((q) => q.label === label);
 
       if (index === -1) {
+        this.#logger?.error(
+          {
+            socket: socket.id,
+            queries,
+          },
+          `Query with label '${label}' not found`,
+        );
         socket.emit("error", `Query with label '${label}' not found`);
         return;
       }
@@ -108,9 +147,7 @@ export class UtilityMetersSubscription {
     }
   }
 
-  private async sendUtilityMetersUpdate(
-    socket: UtilityMetersSocket,
-  ): Promise<void> {
+  async #sendUtilityMetersUpdate(socket: UtilityMetersSocket): Promise<void> {
     const release = await this.lock.acquire(socket.id);
 
     try {
@@ -120,26 +157,39 @@ export class UtilityMetersSubscription {
         return;
       }
       const updates = await Promise.all(
-        queries.map(async (query) => this.getUtilityMetersQueryResult(query)),
+        queries.map(async (query) => this.#getUtilityMetersQueryResult(query)),
       );
 
       socket.emit("utilityMetersUpdate", updates);
     } catch (error) {
+      this.#logger?.error(
+        {
+          socket: socket.id,
+          error,
+        },
+        "Failed to fetch utility consumptions",
+      );
       socket.emit("error", `Failed to fetch utility consumptions: ${error}`);
-      console.error(`Error for ${socket.id}:`, error);
     } finally {
       release();
     }
   }
 
-  private async getUtilityMetersQueryResult(query: UtilityMetersQueryDTO) {
-    const utilityMetersData = await this.utilityMetersHandler.getUtilityMeters(
-      query.filter,
-      query.tagsFilter
-        ? UtilityConsumptionMapper.toDomain(query.tagsFilter)
-        : undefined,
+  async #getUtilityMetersQueryResult(query: UtilityMetersQueryDTO) {
+    const utilityMetersData = await this.#utilityMetersHandler.getUtilityMeters(
+      {
+        ...query?.filter,
+        ...query?.tagsFilter,
+      },
     );
 
-    return UtilityMetersQueryResultMapper.toDTO(query.label, utilityMetersData);
+    return UtilityMetersQueryResultMapper.toDTO(
+      query.label,
+      this.#parseUtilityMeters(utilityMetersData),
+    );
+  }
+
+  #parseUtilityMeters(utilityMeters: UtilityMeters) {
+    return UtilityMetersMapper.toDTO(utilityMeters);
   }
 }

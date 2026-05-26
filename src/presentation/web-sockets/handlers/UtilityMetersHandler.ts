@@ -1,41 +1,44 @@
-import {
-  UtilityMetersDTO,
-  UtilityMetersMapper,
-} from "@presentation/UtilityMetersDTO";
 import { MonitoringService } from "@application/inbound/MonitoringService";
-import { TimeRangeFilter } from "@application/utils/TimeRangeFilter";
-import { UtilityMeters } from "@domain/UtilityMeters";
-import { TagsFilter } from "@application/utils/TagsFilter";
+import { UtilityMeters } from "@domain/values/UtilityMeters";
+import { TimeString } from "@domain/TimeString";
 
 export class UtilityMetersHandler {
-  private lastMeters?: UtilityMetersDTO;
+  private lastMeters?: UtilityMeters;
   private lastFetch?: Date;
-  private fetchInProgress?: Promise<UtilityMetersDTO>;
+  private fetchInProgress?: Promise<UtilityMeters>;
 
   constructor(private readonly monitoringService: MonitoringService) {}
 
-  async getUtilityMeters(
-    filter?: TimeRangeFilter,
-    tagsFilter?: TagsFilter,
-  ): Promise<UtilityMetersDTO> {
-    return this.fetchUtilityMeters(filter, tagsFilter);
+  async getUtilityMeters(filters?: {
+    from?: TimeString;
+    to?: TimeString;
+    username?: string;
+    zoneID?: string;
+  }): Promise<UtilityMeters> {
+    return this.#fetchUtilityMeters(filters);
   }
 
-  async getCachedOrFreshData(frequency: number): Promise<UtilityMetersDTO> {
-    if (this.lastMeters && this.isCachedDataFresh(frequency)) {
+  async getCachedOrFreshData(frequency: number): Promise<UtilityMeters> {
+    if (this.lastMeters && this.#isCachedDataFresh(frequency)) {
       return this.lastMeters;
     }
 
     if (!this.fetchInProgress) {
-      this.fetchInProgress = this.fetchUtilityMeters().finally(() => {
-        this.fetchInProgress = undefined;
-      });
+      this.fetchInProgress = this.#fetchUtilityMeters()
+        .then((data) => {
+          this.lastMeters = data;
+          this.lastFetch = new Date();
+          return data;
+        })
+        .finally(() => {
+          this.fetchInProgress = undefined;
+        });
     }
 
     return this.fetchInProgress;
   }
 
-  private isCachedDataFresh(frequency: number): boolean {
+  #isCachedDataFresh(frequency: number): boolean {
     if (!this.lastFetch) {
       return false;
     }
@@ -44,19 +47,25 @@ export class UtilityMetersHandler {
     return dataAge < frequency;
   }
 
-  private async fetchUtilityMeters(
-    filter?: TimeRangeFilter,
-    tagsFilter?: TagsFilter,
-  ): Promise<UtilityMetersDTO> {
-    const utilityMeters = await this.monitoringService.getUtilityMeters(
-      filter,
-      tagsFilter,
-    );
+  async #fetchUtilityMeters(filters?: {
+    from?: TimeString;
+    to?: TimeString;
+    username?: string;
+    zoneID?: string;
+  }): Promise<UtilityMeters> {
+    const utilityMeters = await this.monitoringService.getUtilityMeters({
+      from: filters?.from,
+      to: filters?.to,
+      tags: {
+        username: filters?.username,
+        zoneID: filters?.zoneID,
+      },
+    });
 
-    return this.parseUtilityMeters(utilityMeters);
-  }
+    if (utilityMeters instanceof Error) {
+      throw utilityMeters;
+    }
 
-  private parseUtilityMeters(utilityMeters: UtilityMeters) {
-    return UtilityMetersMapper.toDTO(utilityMeters);
+    return utilityMeters;
   }
 }

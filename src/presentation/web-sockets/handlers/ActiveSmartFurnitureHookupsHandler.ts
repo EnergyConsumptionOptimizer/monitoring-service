@@ -1,4 +1,4 @@
-import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
+import { ActiveSmartFurnitureHookup } from "@domain/entities/ActiveSmartFurnitureHookup";
 import { MonitoringService } from "@application/inbound/MonitoringService";
 
 export class ActiveSmartFurnitureHookupsHandler {
@@ -11,7 +11,7 @@ export class ActiveSmartFurnitureHookupsHandler {
   async getActiveSmartFurnitureHookups(): Promise<
     ActiveSmartFurnitureHookup[]
   > {
-    return this.fetchActiveSmartFurnitureHookups();
+    return this.#fetchActiveSmartFurnitureHookups();
   }
 
   async getCachedOrFreshData(
@@ -19,23 +19,26 @@ export class ActiveSmartFurnitureHookupsHandler {
   ): Promise<ActiveSmartFurnitureHookup[]> {
     if (
       this.lastActiveSmartFurnitureHookups &&
-      this.isCachedDataFresh(frequency)
+      this.#isCachedDataFresh(frequency)
     ) {
       return this.lastActiveSmartFurnitureHookups;
     }
 
     if (!this.fetchInProgress) {
-      this.fetchInProgress = this.fetchActiveSmartFurnitureHookups().finally(
-        () => {
+      this.fetchInProgress = this.#fetchActiveSmartFurnitureHookups()
+        .then((data) => {
+          this.lastActiveSmartFurnitureHookups = data;
+          this.lastFetch = new Date();
+          return data;
+        })
+        .finally(() => {
           this.fetchInProgress = undefined;
-        },
-      );
+        });
     }
-
     return this.fetchInProgress;
   }
 
-  private isCachedDataFresh(frequency: number): boolean {
+  #isCachedDataFresh(frequency: number): boolean {
     if (!this.lastFetch) {
       return false;
     }
@@ -44,7 +47,7 @@ export class ActiveSmartFurnitureHookupsHandler {
     return dataAge < frequency;
   }
 
-  private async fetchActiveSmartFurnitureHookups(): Promise<
+  async #fetchActiveSmartFurnitureHookups(): Promise<
     ActiveSmartFurnitureHookup[]
   > {
     return this.monitoringService.getActiveSmartFurnitureHookups();
