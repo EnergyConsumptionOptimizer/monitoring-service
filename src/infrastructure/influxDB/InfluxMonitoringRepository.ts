@@ -1,32 +1,34 @@
 import { InfluxDBClient } from "./InfluxDBClient";
-import { Measurement } from "@domain/Measurement";
+import { Measurement } from "@domain/entities/Measurement";
 import { MeasurementTag } from "./MeasurementTag";
 import { Point } from "@influxdata/influxdb-client";
-import { TimeRangeFilter } from "@application/utils/TimeRangeFilter";
-import { TagsFilter } from "@application/utils/TagsFilter";
-import { UtilityMeters } from "@domain/UtilityMeters";
-import { UtilityType, utilityTypeFromString } from "@domain/UtilityType";
+import { TimeRangeFilter } from "@domain/values/TimeRangeFilter";
+import { UtilityMeters } from "@domain/values/UtilityMeters";
+import { UtilityType, UtilityTypeEnum } from "@domain/values/UtilityType";
 import { UtilityMetersModel } from "./models/UtilityMetersModel";
 import { UtilityMetersQueryBuilder } from "./query/UtilityMetersQueryBuilder";
-import { TimeSeriesFilter } from "@application/utils/TimeSeriesFilter";
-import { UtilityConsumptionPoint } from "@domain/UtilityConsumptionPoint";
+import { TimeSeriesFilter } from "@domain/values/TimeSeriesFilter";
+import { UtilityConsumptionPoint } from "@domain/values/UtilityConsumptionPoint";
 import { ConsumptionSeriesQueryBuilder } from "./query/ConsumptionSeriesQueryBuilder";
 import { ConsumptionPointModel } from "./models/ConsumptionPointModel";
-import { MonitoringRepository } from "@application/outbound/MonitoringRepository";
-import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
+import { MonitoringRepository } from "@domain/ports/MonitoringRepository";
+import { SmartFurnitureHookupID } from "@domain/values/SmartFurnitureHookupID";
 import { ActiveSmartFurnitureHookupsModel } from "./models/ActiveSmartFurnitureHookupsModel";
-import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
-import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
-import { ZoneID } from "@domain/ZoneID";
+import { HouseholdUserUsername } from "@domain/values/HouseholdUserUsername";
+import { ZoneID } from "@domain/values/ZoneID";
+import { ActiveSmartFurnitureHookup } from "@domain/entities/ActiveSmartFurnitureHookup";
+import { MeasurementTags } from "@domain/values/MeasurementTags";
+import { ConsumptionValue } from "@domain/values/ConsumptionValue";
+import { UtilityConsumption } from "@domain/values/UtilityConsumption";
 
 export class InfluxMonitoringRepository implements MonitoringRepository {
   constructor(private readonly influxDB: InfluxDBClient) {}
 
   async saveMeasurement(measurement: Measurement): Promise<void> {
-    const point = new Point(measurement.utilityType)
+    const point = new Point(measurement.utilityType.value)
       .tag(
         MeasurementTag.SMART_FURNITURE_HOOKUP_ID,
-        measurement.smartFurnitureHookupID.value(),
+        measurement.smartFurnitureHookupID.value,
       )
       .floatField("value", measurement.consumptionValue)
       .timestamp(measurement.timestamp);
@@ -34,11 +36,11 @@ export class InfluxMonitoringRepository implements MonitoringRepository {
     if (measurement.tags.householdUserUsername)
       point.tag(
         MeasurementTag.HOUSEHOLD_USER_USERNAME,
-        measurement.tags.householdUserUsername.value(),
+        measurement.tags.householdUserUsername.value,
       );
 
     if (measurement.tags.zoneID)
-      point.tag(MeasurementTag.ZONE_ID, measurement.tags.zoneID.value());
+      point.tag(MeasurementTag.ZONE_ID, measurement.tags.zoneID.value);
 
     await this.influxDB.writePoint(point);
   }
@@ -49,7 +51,7 @@ export class InfluxMonitoringRepository implements MonitoringRepository {
     const query = `
     from(bucket: "${this.influxDB.getBucket()}")
       |> range(start: 0)
-      |> filter(fn: (r) => r.${MeasurementTag.HOUSEHOLD_USER_USERNAME} == "${username.value()}")
+      |> filter(fn: (r) => r.${MeasurementTag.HOUSEHOLD_USER_USERNAME} == "${username.value}")
       |> drop(columns: ["${MeasurementTag.HOUSEHOLD_USER_USERNAME}"])
       |> to(bucket: "${this.influxDB.getBucket()}")
       `;
@@ -58,7 +60,7 @@ export class InfluxMonitoringRepository implements MonitoringRepository {
 
     await this.influxDB.deleteAsync(
       MeasurementTag.HOUSEHOLD_USER_USERNAME,
-      username.value(),
+      username.value,
     );
   }
 
@@ -66,14 +68,14 @@ export class InfluxMonitoringRepository implements MonitoringRepository {
     const query = `
     from(bucket: "${this.influxDB.getBucket()}")
       |> range(start: 0)
-      |> filter(fn: (r) => r.${MeasurementTag.ZONE_ID} == "${zoneID.value()}")
+      |> filter(fn: (r) => r.${MeasurementTag.ZONE_ID} == "${zoneID.value}")
       |> drop(columns: ["${MeasurementTag.ZONE_ID}"])
       |> to(bucket: "${this.influxDB.getBucket()}")
       `;
 
     await this.influxDB.queryAsync(query);
 
-    await this.influxDB.deleteAsync(MeasurementTag.ZONE_ID, zoneID.value());
+    await this.influxDB.deleteAsync(MeasurementTag.ZONE_ID, zoneID.value);
   }
 
   async findActiveSmartFurnitureHookups(): Promise<
@@ -83,7 +85,7 @@ export class InfluxMonitoringRepository implements MonitoringRepository {
       from(bucket: "${this.influxDB.getBucket()}")
         |> range(start: -60s)
         |> filter(fn: (r) => r._field == "value")
-        |> filter(fn: (r) =>r._measurement == "${UtilityType.GAS}" or  r._measurement == "${UtilityType.ELECTRICITY}" or r._measurement == "${UtilityType.WATER}")
+        |> filter(fn: (r) =>r._measurement == "${UtilityTypeEnum.GAS}" or  r._measurement == "${UtilityTypeEnum.ELECTRICITY}" or r._measurement == "${UtilityTypeEnum.WATER}")
         |> last()
         |> filter(fn: (r) => r._value > 0)
         |> keep(columns: ["${MeasurementTag.SMART_FURNITURE_HOOKUP_ID}", "_value", "_measurement"])`;
@@ -92,49 +94,50 @@ export class InfluxMonitoringRepository implements MonitoringRepository {
       await this.influxDB.queryAsync(query);
 
     return result.map((activeSmartFurnitureHookups) => {
-      return {
-        id: new SmartFurnitureHookupID(
+      return ActiveSmartFurnitureHookup.rehydrateActive(
+        SmartFurnitureHookupID.from(
           activeSmartFurnitureHookups[MeasurementTag.SMART_FURNITURE_HOOKUP_ID],
-        ),
-        utilityConsumption: {
-          value: activeSmartFurnitureHookups._value,
-          utilityType: utilityTypeFromString(
-            activeSmartFurnitureHookups._measurement,
-          ),
-        },
-      };
+        ) as SmartFurnitureHookupID,
+        UtilityType.from(
+          activeSmartFurnitureHookups._measurement,
+        ) as UtilityType,
+        ConsumptionValue.from(
+          activeSmartFurnitureHookups._value,
+        ) as ConsumptionValue,
+      );
     });
   }
 
   async findUtilityMeters(
     filter?: TimeRangeFilter,
-    tagsFilter?: TagsFilter,
+    tagsFilter?: MeasurementTags,
   ): Promise<UtilityMeters> {
     const query = UtilityMetersQueryBuilder.forBucket(this.influxDB.getBucket())
       .withStart(filter?.from)
       .withStop(filter?.to)
-      .withUser(tagsFilter?.username)
+      .withUser(tagsFilter?.householdUserUsername)
       .withZone(tagsFilter?.zoneID)
       .build();
 
     const result: UtilityMetersModel[] = await this.influxDB.queryAsync(query);
 
-    return result.reduce((acc, row) => {
-      try {
-        const utilityType = utilityTypeFromString(row._measurement);
-        acc[utilityType] = row._value;
-      } catch {
-        console.error("Invalid utility measurement: ", row._measurement);
-      }
+    const point = result.reduce((acc, row) => {
+      const utilityType = UtilityType.from(row._measurement) as UtilityType;
+      const value = ConsumptionValue.from(row._value) as ConsumptionValue;
 
+      acc.push(
+        UtilityConsumption.from(value, utilityType) as UtilityConsumption,
+      );
       return acc;
-    }, {} as UtilityMeters);
+    }, [] as UtilityConsumption[]);
+
+    return UtilityMeters.from(point) as UtilityMeters;
   }
 
   async findUtilityConsumptions(
     utilityType: UtilityType,
     filter?: TimeSeriesFilter,
-    tagsFilter?: TagsFilter,
+    tagsFilter?: MeasurementTags,
   ): Promise<UtilityConsumptionPoint[]> {
     const query = ConsumptionSeriesQueryBuilder.forBucket(
       this.influxDB.getBucket(),
@@ -142,17 +145,21 @@ export class InfluxMonitoringRepository implements MonitoringRepository {
       .withUtility(utilityType)
       .withStart(filter?.from)
       .withStop(filter?.to)
-      .withUser(tagsFilter?.username)
+      .withUser(tagsFilter?.householdUserUsername)
       .withZone(tagsFilter?.zoneID)
       .withWindow(filter?.granularity)
       .build();
-
     const result: ConsumptionPointModel[] =
       await this.influxDB.queryAsync(query);
 
-    return result.map((point) => ({
-      value: point._value,
-      timestamp: new Date(point._time),
-    }));
+    return result.map((point) => {
+      const consumptionValue = ConsumptionValue.from(
+        point._value,
+      ) as ConsumptionValue;
+      return UtilityConsumptionPoint.from(
+        consumptionValue,
+        new Date(point._time),
+      );
+    });
   }
 }

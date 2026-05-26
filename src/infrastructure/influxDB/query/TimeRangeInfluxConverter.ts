@@ -3,7 +3,7 @@ import {
   getTimeStringUnit,
   TimeString,
   TimeUnit,
-} from "@application/utils/TimeString";
+} from "@domain/TimeString";
 
 export const TIME_UNIT_MAP = new Map<TimeUnit, string>([
   ["minute", "m"],

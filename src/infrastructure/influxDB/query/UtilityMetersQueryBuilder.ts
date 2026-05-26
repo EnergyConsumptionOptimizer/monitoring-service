@@ -1,9 +1,9 @@
-import { TimeString } from "@application/utils/TimeString";
-import { getStartOfPeriod } from "@application/utils/timeStringConverter";
-import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
+import { TimeString } from "@domain/TimeString";
+import { getStartOfPeriod } from "@domain/timeStringConverter";
+import { HouseholdUserUsername } from "@domain/values/HouseholdUserUsername";
 import { MeasurementTag } from "../MeasurementTag";
 import { importTimeZone, shouldImportTimeZone } from "./utils";
-import { ZoneID } from "@domain/ZoneID";
+import { ZoneID } from "@domain/values/ZoneID";
 
 /**
  * UtilityMetersQueryBuilder
@@ -109,7 +109,7 @@ export class UtilityMetersQueryBuilder {
 
     if (!this.filters) this.filters = "";
 
-    this.filters += ` and r.${MeasurementTag.HOUSEHOLD_USER_USERNAME} == "${username.value()}"`;
+    this.filters += ` and r.${MeasurementTag.HOUSEHOLD_USER_USERNAME} == "${username.value}"`;
 
     return this;
   }
@@ -121,7 +121,7 @@ export class UtilityMetersQueryBuilder {
 
     if (!this.filters) this.filters = "";
 
-    this.filters += ` and r.${MeasurementTag.ZONE_ID} == "${zoneID.value()}"`;
+    this.filters += ` and r.${MeasurementTag.ZONE_ID} == "${zoneID.value}"`;
 
     return this;
   }

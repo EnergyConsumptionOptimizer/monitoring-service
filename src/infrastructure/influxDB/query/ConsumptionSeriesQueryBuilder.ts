@@ -1,11 +1,11 @@
-import { UtilityType } from "@domain/UtilityType";
+import { UtilityType, UtilityTypeEnum } from "@domain/values/UtilityType";
 import { MeasurementTag } from "../MeasurementTag";
-import { getTimeStringAmount, TimeString } from "@application/utils/TimeString";
-import { getStartOfPeriod } from "@application/utils/timeStringConverter";
-import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
+import { getTimeStringAmount, TimeString } from "@domain/TimeString";
+import { getStartOfPeriod } from "@domain/timeStringConverter";
+import { HouseholdUserUsername } from "@domain/values/HouseholdUserUsername";
 import { convertToUnitFormat } from "./TimeRangeInfluxConverter";
 import { importTimeZone, shouldImportTimeZone } from "./utils";
-import { ZoneID } from "@domain/ZoneID";
+import { ZoneID } from "@domain/values/ZoneID";
 
 export class ConsumptionSeriesQueryBuilder {
   private readonly DEFAULT_START = "0";
@@ -25,7 +25,7 @@ export class ConsumptionSeriesQueryBuilder {
     this.from = `from(bucket: "${bucket}")`;
     this.start = this.DEFAULT_START;
     this.windowSize = this.DEFAULT_WINDOW;
-    this.utilityType = UtilityType.ELECTRICITY;
+    this.utilityType = UtilityTypeEnum.ELECTRICITY;
   }
 
   static forBucket(bucket: string): ConsumptionSeriesQueryBuilder {
@@ -50,7 +50,7 @@ export class ConsumptionSeriesQueryBuilder {
   }
 
   withUtility(utilityType: UtilityType): ConsumptionSeriesQueryBuilder {
-    this.utilityType = utilityType;
+    this.utilityType = utilityType.value;
 
     return this;
   }
@@ -88,7 +88,7 @@ export class ConsumptionSeriesQueryBuilder {
 
     if (!this.filters) this.filters = "";
 
-    this.filters += ` and r.${MeasurementTag.HOUSEHOLD_USER_USERNAME} == "${username.value()}"`;
+    this.filters += ` and r.${MeasurementTag.HOUSEHOLD_USER_USERNAME} == "${username.value}"`;
 
     return this;
   }
@@ -100,7 +100,7 @@ export class ConsumptionSeriesQueryBuilder {
 
     if (!this.filters) this.filters = "";
 
-    this.filters += ` and r.${MeasurementTag.ZONE_ID} == "${zoneID.value()}"`;
+    this.filters += ` and r.${MeasurementTag.ZONE_ID} == "${zoneID.value}"`;
 
     return this;
   }

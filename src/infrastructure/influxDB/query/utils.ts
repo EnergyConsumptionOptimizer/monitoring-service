@@ -1,4 +1,4 @@
-import { getTimeStringUnit, TimeString } from "@application/utils/TimeString";
+import { getTimeStringUnit, TimeString } from "@domain/TimeString";
 
 export const importTimeZone = `import "timezone"
 option location = timezone.location(name: "Europe/Rome")`;

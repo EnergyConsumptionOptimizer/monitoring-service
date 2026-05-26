@@ -77,14 +77,12 @@ export class InfluxDBClient {
     return this.bucket;
   }
 
-  async checkConnection(): Promise<boolean> {
-    try {
-      const queryApi = this.getQueryApi();
-      await queryApi.collectRows("buckets() |> limit(n: 0)");
-      return true;
-    } catch (error) {
-      console.error("InfluxDB connection failed:", error);
-      return false;
-    }
+  async close(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  async checkConnection(): Promise<void> {
+    const queryApi = this.getQueryApi();
+    await queryApi.collectRows("buckets() |> limit(n: 0)");
   }
 }
