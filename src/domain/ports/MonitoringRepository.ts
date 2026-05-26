@@ -1,13 +1,13 @@
-import { Measurement } from "@domain/Measurement";
-import { TimeRangeFilter } from "@application/utils/TimeRangeFilter";
-import { TagsFilter } from "@application/utils/TagsFilter";
-import { UtilityMeters } from "@domain/UtilityMeters";
-import { TimeSeriesFilter } from "@application/utils/TimeSeriesFilter";
-import { UtilityConsumptionPoint } from "@domain/UtilityConsumptionPoint";
-import { UtilityType } from "@domain/UtilityType";
-import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
-import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
-import { ZoneID } from "@domain/ZoneID";
+import { Measurement } from "@domain/entities/Measurement";
+import { TimeRangeFilter } from "@domain/values/TimeRangeFilter";
+import { UtilityMeters } from "@domain/values/UtilityMeters";
+import { TimeSeriesFilter } from "@domain/values/TimeSeriesFilter";
+import { UtilityConsumptionPoint } from "@domain/values/UtilityConsumptionPoint";
+import { UtilityType } from "@domain/values/UtilityType";
+import { HouseholdUserUsername } from "@domain/values/HouseholdUserUsername";
+import { ZoneID } from "@domain/values/ZoneID";
+import { ActiveSmartFurnitureHookup } from "@domain/entities/ActiveSmartFurnitureHookup";
+import { MeasurementTags } from "@domain/values/MeasurementTags";
 
 /**
  * Repository interface responsible for persisting and retrieving monitoring data.
@@ -66,7 +66,7 @@ export interface MonitoringRepository {
    */
   findUtilityMeters(
     filter?: TimeRangeFilter,
-    tagsFilter?: TagsFilter,
+    tagsFilter?: MeasurementTags,
   ): Promise<UtilityMeters>;
 
   /**
@@ -81,6 +81,6 @@ export interface MonitoringRepository {
   findUtilityConsumptions(
     utilityType: UtilityType,
     filter?: TimeSeriesFilter,
-    tagsFilter?: TagsFilter,
+    tagsFilter?: MeasurementTags,
   ): Promise<UtilityConsumptionPoint[]>;
 }

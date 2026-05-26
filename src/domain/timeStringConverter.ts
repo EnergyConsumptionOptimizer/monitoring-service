@@ -3,7 +3,7 @@ import {
   getTimeStringUnit,
   TimeString,
   TimeUnit,
-} from "@application/utils/TimeString";
+} from "@domain/TimeString";
 
 export function getStartOfPeriod(
   time: TimeString,
