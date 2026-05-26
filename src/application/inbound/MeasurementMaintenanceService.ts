@@ -1,5 +1,7 @@
-import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
-import { ZoneID } from "@domain/ZoneID";
+import {
+  HouseholdUserUsernameEmptyError,
+  ZoneIdEmptyError,
+} from "@domain/errors";
 
 export interface MeasurementMaintenanceService {
   /**
@@ -8,13 +10,15 @@ export interface MeasurementMaintenanceService {
    * @param username - The household user's username to remove from measurements.
    */
   removeHouseholdUserTagFromMeasurements(
-    username: HouseholdUserUsername,
-  ): Promise<void>;
+    username: string,
+  ): Promise<undefined | HouseholdUserUsernameEmptyError>;
 
   /**
    * Removes a zone id tag from all measurements.
    *
    * @param zoneID - The zone's id to remove from measurements.
    */
-  removeZoneIDTagFromMeasurements(zoneID: ZoneID): Promise<void>;
+  removeZoneIDTagFromMeasurements(
+    zoneID: string,
+  ): Promise<undefined | ZoneIdEmptyError>;
 }

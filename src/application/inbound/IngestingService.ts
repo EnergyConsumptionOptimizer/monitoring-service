@@ -1,6 +1,3 @@
-import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
-import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
-
 /**
  * Service interface for ingesting new measurements coming from a smart furniture hookup.
  */
@@ -19,9 +16,9 @@ export interface IngestingService {
    * @param householdUserUsername
    */
   createMeasurement(
-    smartFurnitureHookupID: SmartFurnitureHookupID,
+    smartFurnitureHookupID: string,
     consumptionValue: number,
     timestamp: Date,
-    householdUserUsername?: HouseholdUserUsername,
-  ): Promise<void>;
+    householdUserUsername?: string,
+  ): Promise<undefined | Error>;
 }

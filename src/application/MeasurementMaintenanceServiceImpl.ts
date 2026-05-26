@@ -1,20 +1,43 @@
-import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
-import { ZoneID } from "@domain/ZoneID";
+import { HouseholdUserUsername } from "@domain/values/HouseholdUserUsername";
+import { ZoneID } from "@domain/values/ZoneID";
 import { MeasurementMaintenanceService } from "@application/inbound/MeasurementMaintenanceService";
-import { MonitoringRepository } from "@application/outbound/MonitoringRepository";
+import { MonitoringRepository } from "@domain/ports/MonitoringRepository";
+import {
+  HouseholdUserUsernameEmptyError,
+  ZoneIdEmptyError,
+} from "@domain/errors";
 
 export class MeasurementMaintenanceServiceImpl implements MeasurementMaintenanceService {
-  constructor(private readonly monitoringRepository: MonitoringRepository) {}
+  readonly #monitoringRepository: MonitoringRepository;
+  constructor(monitoringRepository: MonitoringRepository) {
+    this.#monitoringRepository = monitoringRepository;
+  }
 
-  removeHouseholdUserTagFromMeasurements(
-    username: HouseholdUserUsername,
-  ): Promise<void> {
-    return this.monitoringRepository.deleteHouseholdUserTagFromMeasurements(
-      username,
+  async removeHouseholdUserTagFromMeasurements(
+    username: string,
+  ): Promise<undefined | HouseholdUserUsernameEmptyError> {
+    const usernameValue = HouseholdUserUsername.from(username);
+
+    if (usernameValue instanceof Error) {
+      return usernameValue;
+    }
+
+    await this.#monitoringRepository.deleteHouseholdUserTagFromMeasurements(
+      usernameValue,
     );
   }
 
-  removeZoneIDTagFromMeasurements(zoneID: ZoneID): Promise<void> {
-    return this.monitoringRepository.deleteZoneIDTagFromMeasurements(zoneID);
+  async removeZoneIDTagFromMeasurements(
+    zoneID: string,
+  ): Promise<undefined | ZoneIdEmptyError> {
+    const zoneIDValue = ZoneID.from(zoneID);
+
+    if (zoneIDValue instanceof Error) {
+      return zoneIDValue;
+    }
+
+    await this.#monitoringRepository.deleteZoneIDTagFromMeasurements(
+      zoneIDValue,
+    );
   }
 }

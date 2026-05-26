@@ -1,5 +1,9 @@
-import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
-import { SmartFurnitureHookup } from "@domain/SmartFurnitureHookup";
+import { SmartFurnitureHookupID } from "@domain/values/SmartFurnitureHookupID";
+
+export interface SmartFurnitureHookupDTO {
+  id: string;
+  utilityType: string;
+}
 
 /**
  * Service interface for managing smart furniture hookups.
@@ -13,5 +17,5 @@ export interface SmartFurnitureHookupService {
    */
   getSmartFurnitureHookup(
     smartFurnitureHookupID: SmartFurnitureHookupID,
-  ): Promise<SmartFurnitureHookup | null>;
+  ): Promise<SmartFurnitureHookupDTO | undefined | Error>;
 }

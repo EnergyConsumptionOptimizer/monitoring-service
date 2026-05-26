@@ -1,4 +1,4 @@
-import { HouseholdUserUsername } from "@domain/HouseholdUserUsername";
+import { HouseholdUserUsername } from "@domain/values/HouseholdUserUsername";
 /**
  * Service interface for managing household user
  */

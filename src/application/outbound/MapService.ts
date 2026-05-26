@@ -1,5 +1,8 @@
-import { SmartFurnitureHookupID } from "@domain/SmartFurnitureHookupID";
-import { ZoneID } from "@domain/ZoneID";
+import { SmartFurnitureHookupID } from "@domain/values/SmartFurnitureHookupID";
+
+export interface ZoneIdDTO {
+  zoneID: string;
+}
 
 /**
  * Service interface for interacting with map elements
@@ -11,5 +14,5 @@ export interface MapService {
    */
   isSmartFurnitureHookupInAZone(
     smartFurnitureHookupID: SmartFurnitureHookupID,
-  ): Promise<ZoneID | null>;
+  ): Promise<ZoneIdDTO | null>;
 }
