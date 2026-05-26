@@ -11,7 +11,7 @@ export class MeasurementMaintenanceController {
     request: Request,
     response: Response,
   ): Promise<void> {
-    const householdUserUsername = request.params.username;
+    const householdUserUsername = request.params.username as string;
 
     await this.measurementMaintenanceService.removeHouseholdUserTagFromMeasurements(
       householdUserUsername,
@@ -24,7 +24,7 @@ export class MeasurementMaintenanceController {
     request: Request,
     response: Response,
   ): Promise<void> {
-    const zoneID = request.params.zoneID;
+    const zoneID = request.params.zoneID as string;
 
     await this.measurementMaintenanceService.removeZoneIDTagFromMeasurements(
       zoneID,

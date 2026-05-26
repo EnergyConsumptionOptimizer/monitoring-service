@@ -10,7 +10,7 @@ export class MonitoringController {
     request: Request,
     response: Response,
   ): Promise<void> {
-    const utilityType = request.params.utilityType;
+    const utilityType = request.params.utilityType as string;
 
     const from = request.query.from as TimeString;
     const to = request.query.to as TimeString;
