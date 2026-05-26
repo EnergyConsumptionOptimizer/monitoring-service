@@ -1,4 +1,4 @@
-import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
+import { ActiveSmartFurnitureHookup } from "@domain/entities/ActiveSmartFurnitureHookup";
 import {
   ActiveSmartFurnitureHookupDTO,
   ActiveSmartFurnitureHookupMapper,

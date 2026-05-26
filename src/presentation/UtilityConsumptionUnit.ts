@@ -1,13 +1,13 @@
-import { UtilityType } from "@domain/UtilityType";
+import { UtilityTypeEnum } from "@domain/values/UtilityType";
 
 export function utilityConsumptionUnitFromUtilityType(
-  utilityType: UtilityType,
+  utilityType: UtilityTypeEnum,
 ) {
   switch (utilityType) {
-    case UtilityType.GAS:
-    case UtilityType.WATER:
+    case UtilityTypeEnum.GAS:
+    case UtilityTypeEnum.WATER:
       return "smc";
-    case UtilityType.ELECTRICITY:
+    case UtilityTypeEnum.ELECTRICITY:
       return "kWh";
     default:
       return undefined;

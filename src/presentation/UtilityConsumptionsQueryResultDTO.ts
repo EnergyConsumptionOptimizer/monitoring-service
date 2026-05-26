@@ -1,9 +1,9 @@
-import { UtilityConsumptionPoint } from "@domain/UtilityConsumptionPoint";
+import { UtilityConsumptionPoint } from "@domain/values/UtilityConsumptionPoint";
 import {
   UtilityConsumptionsDTO,
   utilityConsumptionsMapper,
 } from "@presentation/UtilityConsumptionsDTO";
-import { UtilityType } from "@domain/UtilityType";
+import { UtilityType } from "@domain/values/UtilityType";
 
 export interface UtilityConsumptionsQueryResultDTO {
   label: string;

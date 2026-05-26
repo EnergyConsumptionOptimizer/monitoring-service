@@ -1,8 +1,9 @@
-import { ActiveSmartFurnitureHookup } from "@domain/ActiveSmartFurnitureHookup";
 import {
   UtilityConsumptionDTO,
   UtilityConsumptionMapper,
 } from "@presentation/UtilityConsumptionDTO";
+import { ActiveSmartFurnitureHookup } from "@domain/entities/ActiveSmartFurnitureHookup";
+import { UtilityConsumption } from "@domain/values/UtilityConsumption";
 
 export interface ActiveSmartFurnitureHookupDTO {
   id: string;
@@ -14,9 +15,12 @@ export const ActiveSmartFurnitureHookupMapper = {
     activeSmartFurnitureHookup: ActiveSmartFurnitureHookup,
   ): ActiveSmartFurnitureHookupDTO {
     return {
-      id: activeSmartFurnitureHookup.id.value(),
+      id: activeSmartFurnitureHookup.id.toString(),
       utilityConsumption: UtilityConsumptionMapper.toDTO(
-        activeSmartFurnitureHookup.utilityConsumption,
+        UtilityConsumption.from(
+          activeSmartFurnitureHookup.consumption,
+          activeSmartFurnitureHookup.utilityType,
+        ),
       ),
     };
   },

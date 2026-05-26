@@ -2,9 +2,9 @@ import {
   ConsumptionPointDTO,
   ConsumptionPointMapper,
 } from "@presentation/ConsumptionPointDTO";
-import { UtilityType } from "@domain/UtilityType";
+import { UtilityType } from "@domain/values/UtilityType";
 import { utilityConsumptionUnitFromUtilityType } from "@presentation/UtilityConsumptionUnit";
-import { UtilityConsumptionPoint } from "@domain/UtilityConsumptionPoint";
+import { UtilityConsumptionPoint } from "@domain/values/UtilityConsumptionPoint";
 
 export interface UtilityConsumptionsDTO {
   utilityConsumptionUnit: string;
@@ -18,7 +18,7 @@ export const utilityConsumptionsMapper = {
   ): UtilityConsumptionsDTO {
     return {
       utilityConsumptionUnit:
-        utilityConsumptionUnitFromUtilityType(utilityType) ?? "",
+        utilityConsumptionUnitFromUtilityType(utilityType.value) ?? "",
       utilityConsumptionPoints: utilityConsumptions.map(
         ConsumptionPointMapper.toDTO,
       ),

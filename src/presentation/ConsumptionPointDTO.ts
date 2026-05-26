@@ -1,4 +1,4 @@
-import { UtilityConsumptionPoint } from "@domain/UtilityConsumptionPoint";
+import { UtilityConsumptionPoint } from "@domain/values/UtilityConsumptionPoint";
 
 export interface ConsumptionPointDTO {
   value: number;
@@ -8,7 +8,7 @@ export interface ConsumptionPointDTO {
 export const ConsumptionPointMapper = {
   toDTO(point: UtilityConsumptionPoint): ConsumptionPointDTO {
     return {
-      value: point.value,
+      value: point.consumption.value,
       timestamp: point.timestamp.toLocaleString(),
     };
   },

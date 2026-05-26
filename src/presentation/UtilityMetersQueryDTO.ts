@@ -1,5 +1,5 @@
 import { TagsFilterDTO } from "@presentation/TagsFilterDTO";
-import { TimeString } from "@application/utils/TimeString";
+import { TimeString } from "@domain/TimeString";
 
 export interface UtilityMetersQueryDTO {
   label: string;

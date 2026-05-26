@@ -1,9 +1,10 @@
-import { UtilityMeters } from "@domain/UtilityMeters";
-import { UtilityType } from "@domain/UtilityType";
+import { UtilityMeters } from "@domain/values/UtilityMeters";
+import { UtilityType, UtilityTypeEnum } from "@domain/values/UtilityType";
 import {
   UtilityConsumptionDTO,
   UtilityConsumptionMapper,
 } from "@presentation/UtilityConsumptionDTO";
+import { UtilityConsumption } from "@domain/values/UtilityConsumption";
 
 export interface UtilityMetersDTO {
   utilityMeters: {
@@ -15,17 +16,19 @@ export interface UtilityMetersDTO {
 
 export const UtilityMetersMapper = {
   toDTO(utilityMeters: UtilityMeters): UtilityMetersDTO {
-    const toConsumptionDTO = (utility: UtilityType) =>
-      UtilityConsumptionMapper.toDTO({
-        value: utilityMeters[utility] ?? 0,
-        utilityType: utility,
-      });
+    const toConsumptionDTO = (utility: UtilityTypeEnum) =>
+      UtilityConsumptionMapper.toDTO(
+        UtilityConsumption.from(
+          utilityMeters.meters[utility],
+          UtilityType.fromEnum(utility),
+        ),
+      );
 
     return {
       utilityMeters: {
-        gas: toConsumptionDTO(UtilityType.GAS),
-        water: toConsumptionDTO(UtilityType.WATER),
-        electricity: toConsumptionDTO(UtilityType.ELECTRICITY),
+        gas: toConsumptionDTO(UtilityTypeEnum.GAS),
+        water: toConsumptionDTO(UtilityTypeEnum.WATER),
+        electricity: toConsumptionDTO(UtilityTypeEnum.ELECTRICITY),
       },
     };
   },

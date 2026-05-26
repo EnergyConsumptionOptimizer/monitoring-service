@@ -1,4 +1,4 @@
-import { UtilityConsumption } from "@domain/UtilityConsumption";
+import { UtilityConsumption } from "@domain/values/UtilityConsumption";
 import { utilityConsumptionUnitFromUtilityType } from "@presentation/UtilityConsumptionUnit";
 
 export interface UtilityConsumptionDTO {
@@ -9,10 +9,11 @@ export interface UtilityConsumptionDTO {
 export const UtilityConsumptionMapper = {
   toDTO(utilityConsumption: UtilityConsumption): UtilityConsumptionDTO {
     return {
-      value: utilityConsumption.value,
+      value: utilityConsumption.consumption?.value ?? 0,
       utilityConsumptionUnit:
-        utilityConsumptionUnitFromUtilityType(utilityConsumption.utilityType) ??
-        "",
+        utilityConsumptionUnitFromUtilityType(
+          utilityConsumption.utilityType?.value,
+        ) ?? "",
     };
   },
 };
