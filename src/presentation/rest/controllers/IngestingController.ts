@@ -37,10 +37,8 @@ export class IngestingController {
   }
 
   async getIngestingEndpoint(_request: Request, response: Response) {
-    response
-      .status(StatusCodes.OK)
-      .json({
-        endpoint: `http://${this.#EXTERNAL_API_HOST}:${this.#EXTERNAL_API_PORT}/${this.#HOST}/api/internal/measurements`,
-      });
+    response.status(StatusCodes.OK).json({
+      endpoint: `http://${this.#EXTERNAL_API_HOST}:${this.#EXTERNAL_API_PORT}/${this.#HOST}/api/internal/measurements`,
+    });
   }
 }
