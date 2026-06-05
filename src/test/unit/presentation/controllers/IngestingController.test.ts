@@ -12,12 +12,7 @@ describe("Ingesting REST API", () => {
 
   beforeEach(() => {
     ingestingService = mock<IngestingService>();
-    controller = new IngestingController(
-      ingestingService,
-      "host",
-      "port",
-      "monitoring",
-    );
+    controller = new IngestingController(ingestingService);
   });
 
   describe("Create a measurement", () => {

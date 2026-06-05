@@ -67,7 +67,7 @@ async function ingestMeasurement(params: {
     query["smart_furniture_hookup_id"] =
       params.smartFurnitureHookupId as string;
   }
-  return request(server).post("/api/internal/measurements").query(query).send({
+  return request(server).post("/api/measurements").query(query).send({
     realTimeConsumption: params.realTimeConsumption,
     timestamp: params.timestamp,
     username: params.username,

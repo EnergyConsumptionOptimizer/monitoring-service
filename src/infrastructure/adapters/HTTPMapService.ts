@@ -25,7 +25,7 @@ export class HTTPMapService implements MapService {
       if (!data.success || !data.data.zoneID) return null;
 
       return {
-        zoneID: data.data.zoneID,
+        zoneID: response.data.zoneId,
       };
     } catch (error) {
       this.#logger?.error(

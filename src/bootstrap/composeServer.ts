@@ -177,9 +177,6 @@ export function createPresentationLayer(
   );
   const ingestingController: IngestingController = new IngestingController(
     ingestingService,
-    config.externalApiHost,
-    config.externalApiPort,
-    config.appName,
   );
 
   const socketAuthMiddleware = new SocketAuthMiddleware();

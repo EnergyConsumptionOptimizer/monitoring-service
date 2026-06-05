@@ -30,8 +30,6 @@ export const EnvSchema = z.object({
   LOG_LEVEL: z
     .enum(["trace", "debug", "info", "warn", "error", "fatal"])
     .default("info"),
-  EXTERNAL_API_HOST: z.string().default("localhost"),
-  EXTERNAL_API_PORT: z.string().default("80"),
   NAME: z.string().default("monitoring-service"),
 });
 
@@ -77,8 +75,6 @@ export const config = {
   hookupServiceUrl: `http://${env.HOOKUP_SERVICE_HOST}:${env.HOOKUP_SERVICE_PORT}`,
   mapServiceUrl: `http://${env.MAP_SERVICE_HOST}:${env.MAP_SERVICE_PORT}`,
   logLevel: env.LOG_LEVEL,
-  externalApiHost: env.EXTERNAL_API_HOST,
-  externalApiPort: env.EXTERNAL_API_PORT,
   appName: env.NAME,
 } as const;
 
