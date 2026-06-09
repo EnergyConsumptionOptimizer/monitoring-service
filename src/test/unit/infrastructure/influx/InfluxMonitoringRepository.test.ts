@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { mock, type MockProxy } from "vitest-mock-extended";
-import { MeasurementTag } from "@storage/influxDB/MeasurementTag";
-import { InfluxDBClient } from "@storage/influxDB/InfluxDBClient";
-import { InfluxMonitoringRepository } from "@storage/influxDB/InfluxMonitoringRepository";
+import { MeasurementTag } from "@infrastructure/persistence/influxDB/MeasurementTag";
+import { InfluxDBClient } from "@infrastructure/persistence/influxDB/InfluxDBClient";
+import { InfluxMonitoringRepository } from "@infrastructure/persistence/influxDB/InfluxMonitoringRepository";
 import {
   aMeasurement,
   mockActiveSmartFurnitureHookupBathroomSink,
@@ -16,7 +16,7 @@ import {
 } from "@test/domainFactories";
 import { Point } from "@influxdata/influxdb-client";
 import { UtilityTypeEnum } from "@domain/values/UtilityType";
-import { convertToUnitFormat } from "@storage/influxDB/query/TimeRangeInfluxConverter";
+import { convertToUnitFormat } from "@infrastructure/persistence/influxDB/query/TimeRangeInfluxConverter";
 import { TimeString } from "@domain/TimeString";
 
 function makeUtilityMetersRow(measurement: string, value: number) {
