@@ -22,7 +22,7 @@ export class HTTPMapService implements MapService {
       const response = await axios.get(url);
       const data = getSmartFurnitureHookupResponse.safeParse(response.data);
 
-      if (!data.success || !data.data.zoneID) return null;
+      if (!data.success || !data.data.zoneId) return null;
 
       return {
         zoneID: response.data.zoneId,
