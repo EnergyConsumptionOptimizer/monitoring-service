@@ -19,7 +19,7 @@ export const EnvSchema = z.object({
     .default("monitoring-service-readmodel-group"),
   KAFKA_USER_TOPIC: z.string().default("user-events"),
   KAFKA_HOOKUP_TOPIC: z.string().default("smart-furniture-hookup-events"),
-  KAFKA_ZONE_TOPIC: z.string().default("zone-events"),
+  KAFKA_MAP_TOPIC: z.string().default("map-events"),
   KAFKA_DLQ_TOPIC: z.string().default("monitoring-service-dlq"),
   USER_SERVICE_HOST: z.string().default("user"),
   USER_SERVICE_PORT: z.coerce.number().default(3000),
@@ -67,7 +67,7 @@ export const config = {
     topics: {
       user: env.KAFKA_USER_TOPIC,
       hookup: env.KAFKA_HOOKUP_TOPIC,
-      zone: env.KAFKA_ZONE_TOPIC,
+      map: env.KAFKA_MAP_TOPIC,
       dlq: env.KAFKA_DLQ_TOPIC,
     },
   },

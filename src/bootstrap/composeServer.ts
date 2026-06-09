@@ -201,7 +201,7 @@ export function createPresentationLayer(
     {
       userTopic: config.kafka.topics.user,
       hookupTopic: config.kafka.topics.hookup,
-      zoneTopic: config.kafka.topics.zone,
+      zoneTopic: config.kafka.topics.map,
     },
     readModelHandler,
     kafkaHealthMonitor,
@@ -238,7 +238,7 @@ export function createPresentationLayer(
     config.kafka.brokers,
     config.kafka.clientId,
     config.kafka.groupId,
-    config.kafka.topics.user,
+    config.kafka.topics.map,
     zoneHandler,
     kafkaHealthMonitor,
     retryForever,
