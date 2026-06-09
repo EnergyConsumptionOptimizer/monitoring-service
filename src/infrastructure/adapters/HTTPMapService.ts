@@ -1,7 +1,7 @@
 import { SmartFurnitureHookupID } from "@domain/values/SmartFurnitureHookupID";
 import axios from "axios";
 import { MapService, ZoneIdDTO } from "@application/outbound/MapService";
-import { getSmartFurnitureHookupResponse } from "@storage/contracts/getSmartFurnitureHookupFromMapResponse";
+import { getSmartFurnitureHookupResponse } from "@infrastructure/contracts/getSmartFurnitureHookupFromMapResponse";
 import { Logger } from "pino";
 
 export class HTTPMapService implements MapService {
@@ -19,14 +19,13 @@ export class HTTPMapService implements MapService {
     const url = `${this.baseUrl}/api/internal/smart-furniture-hookups/${smartFurnitureHookupID.value}`;
 
     try {
-      const response = getSmartFurnitureHookupResponse.safeParse(
-        await axios.get(url),
-      );
+      const response = await axios.get(url);
+      const data = getSmartFurnitureHookupResponse.safeParse(response.data);
 
-      if (!response.success || !response.data.zoneID) return null;
+      if (!data.success || !data.data.zoneID) return null;
 
       return {
-        zoneID: response.data.zoneID,
+        zoneID: data.data.zoneID,
       };
     } catch (error) {
       this.#logger?.error(

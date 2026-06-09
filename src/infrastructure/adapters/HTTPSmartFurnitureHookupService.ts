@@ -4,7 +4,7 @@ import {
 } from "@application/outbound/SmartFurnitureHookupService";
 import { SmartFurnitureHookupID } from "@domain/values/SmartFurnitureHookupID";
 import axios, { isAxiosError } from "axios";
-import { getSmartFurnitureHookupResponse } from "@storage/contracts/getSmartFurnitureHookupResponse";
+import { getSmartFurnitureHookupResponse } from "@infrastructure/contracts/getSmartFurnitureHookupResponse";
 import { Logger } from "pino";
 
 export class HTTPSmartFurnitureHookupService implements SmartFurnitureHookupService {
@@ -23,17 +23,16 @@ export class HTTPSmartFurnitureHookupService implements SmartFurnitureHookupServ
     const url = `${this.baseUrl}/api/internal/smart-furniture-hookups/${smartFurnitureHookupID.value}`;
 
     try {
-      const response = getSmartFurnitureHookupResponse.safeParse(
-        await axios.get(url),
-      );
+      const response = await axios.get(url);
+      const data = getSmartFurnitureHookupResponse.safeParse(response);
 
-      if (!response.success) {
+      if (!data.success) {
         return undefined;
       }
 
       return {
-        id: response.data.id,
-        utilityType: response.data.utilityType,
+        id: data.data.id,
+        utilityType: data.data.utilityType,
       };
     } catch (error) {
       this.#logger?.error(

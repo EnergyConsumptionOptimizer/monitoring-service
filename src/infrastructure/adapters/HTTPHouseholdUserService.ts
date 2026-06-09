@@ -1,7 +1,7 @@
 import axios from "axios";
 import { HouseholdUserService } from "@application/outbound/HouseholdUserService";
 import { HouseholdUserUsername } from "@domain/values/HouseholdUserUsername";
-import { getUserByUsernameResponse } from "@storage/contracts/getUserByUsernameResponse";
+import { getUserByUsernameResponse } from "@infrastructure/contracts/getUserByUsernameResponse";
 import { Logger } from "pino";
 
 export class HTTPHouseholdUserService implements HouseholdUserService {
@@ -22,13 +22,12 @@ export class HTTPHouseholdUserService implements HouseholdUserService {
     }
 
     try {
-      const response = getUserByUsernameResponse.safeParse(
-        await axios.get(
-          `${this.baseUrl}/api/internal/users/${householdUserUsername.value}`,
-        ),
+      const response = await axios.get(
+        `${this.baseUrl}/api/internal/users/${householdUserUsername.value}`,
       );
+      const data = getUserByUsernameResponse.safeParse(response.data);
 
-      return response.success;
+      return data.success;
     } catch (error) {
       this.#logger?.error({ error }, "Error while getting user");
       return false;
