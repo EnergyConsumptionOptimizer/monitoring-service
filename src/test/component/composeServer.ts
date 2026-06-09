@@ -13,7 +13,12 @@ import {
 } from "@bootstrap/composeServer";
 import { createApp } from "@bootstrap/app";
 import { GenericContainer, Wait } from "testcontainers";
-import { InfluxDBClient } from "@storage/influxDB/InfluxDBClient";
+import { InfluxDBClient } from "@infrastructure/persistence/influxDB/InfluxDBClient";
+import { RedisReadModelStore } from "@infrastructure/persistence/redis/RedisReadModelStore";
+import { DlqPublisher } from "@infrastructure/messaging/DlqPublisher";
+import { KafkaHealthMonitor } from "@infrastructure/messaging/KafkaHealthMonitor";
+import { MongoInboxRepository } from "@infrastructure/persistence/mongo/MongoInboxRepository";
+import { mock } from "vitest-mock-extended";
 
 export const mockSmartFurnitureHookupService: MockedObject<SmartFurnitureHookupService> =
   {
@@ -80,6 +85,10 @@ export async function composeServerForComponentTest(
     application.ingestingService,
     application.monitoringService,
     application.measurementMaintenanceService,
+    mock<RedisReadModelStore>(),
+    mock<DlqPublisher>(),
+    mock<MongoInboxRepository>(),
+    mock<KafkaHealthMonitor>(),
     logger,
   );
 

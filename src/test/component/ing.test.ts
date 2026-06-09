@@ -8,7 +8,7 @@ import {
   mockSmartFurnitureHookupService,
   setupInfluxContainer,
 } from "@test/component/composeServer";
-import { InfluxDBClient } from "@storage/influxDB/InfluxDBClient";
+import { InfluxDBClient } from "@infrastructure/persistence/influxDB/InfluxDBClient";
 import request from "supertest";
 import http from "http";
 import {
@@ -18,7 +18,7 @@ import {
   validSmartFurnitureHookupId,
   validZoneId,
 } from "@test/domainFactories";
-import { MeasurementTag } from "@storage/influxDB/MeasurementTag";
+import { MeasurementTag } from "@infrastructure/persistence/influxDB/MeasurementTag";
 import { StatusCodes } from "http-status-codes";
 
 let container: StartedTestContainer;
