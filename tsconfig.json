@@ -19,7 +19,7 @@
       "@domain/*": ["./domain/*"],
       "@application/*": ["./application/*"],
       "@presentation/*": ["./presentation/*"],
-      "@storage/*": ["./infrastructure/*"],
+      "@infrastructure/*": ["./infrastructure/*"],
       "@bootstrap/*": ["./bootstrap/*"],
       "@test/*": ["./test/*"],
     }
