@@ -30,6 +30,9 @@ export class MonitoringController {
         },
       });
 
+    if (utilityConsumptions instanceof Error) {
+      throw utilityConsumptions;
+    }
     response.status(StatusCodes.OK).json({
       utilityConsumptions: utilityConsumptions,
     });
