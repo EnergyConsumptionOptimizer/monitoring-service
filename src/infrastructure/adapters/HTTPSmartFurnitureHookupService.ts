@@ -24,7 +24,7 @@ export class HTTPSmartFurnitureHookupService implements SmartFurnitureHookupServ
 
     try {
       const response = await axios.get(url);
-      const data = getSmartFurnitureHookupResponse.safeParse(response);
+      const data = getSmartFurnitureHookupResponse.safeParse(response.data);
 
       if (!data.success) {
         return undefined;

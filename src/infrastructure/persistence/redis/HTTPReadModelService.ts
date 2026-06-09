@@ -23,7 +23,7 @@ export class HttpReadModelService implements ReadModelService {
   async fetchAllHouseholdUsers(): Promise<UserReadModel[]> {
     const url = `${this.userServiceUrl}/api/internal/users`;
 
-    const parsed = getUsersResponse.safeParse(await axios.get(url));
+    const parsed = getUsersResponse.safeParse((await axios.get(url)).data);
 
     if (!parsed.success) {
       this.#logger?.error(
@@ -42,7 +42,7 @@ export class HttpReadModelService implements ReadModelService {
     const url = `${this.hookupServiceUrl}/api/internal/smart-furniture-hookups`;
 
     const parsed = getSmartFurnitureHookupsResponse.safeParse(
-      await axios.get(url),
+      (await axios.get(url)).data,
     );
 
     if (!parsed.success) {
@@ -62,7 +62,7 @@ export class HttpReadModelService implements ReadModelService {
     const url = `${this.mapServiceUrl}/api/internal/smart-furniture-hookups`;
 
     const parsed = getSmartFurnitureHookupsZoneResponse.safeParse(
-      await axios.get(url),
+      (await axios.get(url)).data,
     );
 
     if (!parsed.success) {
