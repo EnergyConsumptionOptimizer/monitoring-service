@@ -1,4 +1,4 @@
-import { InfluxDBClient } from "@storage/influxDB/InfluxDBClient";
+import { InfluxDBClient } from "@infrastructure/persistence/influxDB/InfluxDBClient";
 import { config } from "@bootstrap/config";
 import { Logger } from "pino";
 
