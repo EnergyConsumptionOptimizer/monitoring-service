@@ -26,7 +26,7 @@
   "dependencies": {
     "@influxdata/influxdb-client": "^1.35.0",
     "@influxdata/influxdb-client-apis": "^1.35.0",
-    "@opentelemetry/auto-instrumentations-node": "^0.79.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.80.0",
     "@opentelemetry/sdk-node": "^0.222.0",
     "axios": "^1.9.0",
     "bcrypt": "^6.0.0",
